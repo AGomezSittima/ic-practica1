@@ -12,6 +12,7 @@ class MessageBox:
     def __init__(self):
         self.window = Tk()
         self.window.wm_withdraw()
+        self.window.resizable(True, True)
 
     def show_error(self, msg):
         messagebox.showerror("Error", msg)
@@ -33,12 +34,13 @@ class Visual:
             2: Colours.BLACK.value,
             3: Colours.WHITE.value
         }
-        self.window_size = 900
-        self.screen = pygame.display.set_mode([self.window_size + 1, self.window_size + 30])
+        self.window_size = 500
+        self.screen = pygame.display.set_mode(
+            [self.window_size + 1, self.window_size + 30])
         self.screen.fill(Colours.PURE_BLACK.value)
         self.algo_selection = 0
         self.edit_mode = -1
-        self.grid_size = 60
+        self.grid_size = 20
         self.algo_names = ["Dijkstra", "A*"]
         self.font = font
         self.start_cell = self.end_cell = None
@@ -63,20 +65,24 @@ class Visual:
 
                 self.squares.append(sublist)
 
-            self.grid = [[1 for i in range(self.grid_size)] for ii in range(self.grid_size)]
+            self.grid = [[1 for i in range(self.grid_size)]
+                         for ii in range(self.grid_size)]
 
         def setup_buttons_and_labels():
             start_label = self.font.render("Set Start", 1, Colours.WHITE.value)
             end_label = self.font.render("Set End", 1, Colours.WHITE.value)
             obs_label = self.font.render("Set Obs.", 1, Colours.WHITE.value)
-            random_label = self.font.render("Randomize", 1, Colours.WHITE.value)
+            random_label = self.font.render(
+                "Randomize", 1, Colours.WHITE.value)
             clear_label = self.font.render("Clear (1)", 1, Colours.WHITE.value)
             clean_label = self.font.render("Clean", 1, Colours.WHITE.value)
             reset_label = self.font.render("Reset", 1, Colours.WHITE.value)
             switch_label = self.font.render("Switch", 1, Colours.WHITE.value)
-            findpath_label = self.font.render("Find Path", 1, Colours.WHITE.value)
+            findpath_label = self.font.render(
+                "Find Path", 1, Colours.WHITE.value)
 
-            labels = [start_label, end_label, obs_label, random_label, clear_label, clean_label, reset_label, switch_label, findpath_label]
+            labels = [start_label, end_label, obs_label, random_label,
+                      clear_label, clean_label, reset_label, switch_label, findpath_label]
             # edit_modes:   0         1          2             3            4            5            6             7               8
 
             button_margin = 3
@@ -88,20 +94,27 @@ class Visual:
                 l_w, l_h = l.get_size()
                 bg_w, bg_h = l_w + 2 * text_width_margin, l_h + 2 * text_height_margin
                 bg_button = pygame.Rect(next_pos[0], next_pos[1], bg_w, bg_h)
-                pygame.draw.rect(self.screen, Colours.WHITE.value, bg_button, 1)
+                pygame.draw.rect(
+                    self.screen, Colours.WHITE.value, bg_button, 1)
                 self.buttons.append(bg_button)
 
-                l_rect = l.get_rect(center=(next_pos[0] + bg_w // 2, next_pos[1] + bg_h // 2))
+                l_rect = l.get_rect(
+                    center=(next_pos[0] + bg_w // 2, next_pos[1] + bg_h // 2))
                 self.screen.blit(l, l_rect)
 
-                next_pos = (next_pos[0] + l_w + 2 * text_width_margin + button_margin, next_pos[1])
+                next_pos = (
+                    next_pos[0] + l_w + 2 * text_width_margin + button_margin, next_pos[1])
 
-            algorithm_text_label = self.font.render("Algorithm: ", 1, Colours.WHITE.value)
+            algorithm_text_label = self.font.render(
+                "Algorithm: ", 1, Colours.WHITE.value)
             algorithm_text_label_size = algorithm_text_label.get_size()
-            self.screen.blit(algorithm_text_label, (next_pos[0] + 8, next_pos[1] + 1))
+            self.screen.blit(algorithm_text_label,
+                             (next_pos[0] + 8, next_pos[1] + 1))
 
-            self.algo_label_start_pos = (next_pos[0] + 8 + algorithm_text_label_size[0], next_pos[1] + 1)
-            algorithm_info_label = self.font.render(self.algo_names[self.algo_selection], 1, Colours.WHITE.value)
+            self.algo_label_start_pos = (
+                next_pos[0] + 8 + algorithm_text_label_size[0], next_pos[1] + 1)
+            algorithm_info_label = self.font.render(
+                self.algo_names[self.algo_selection], 1, Colours.WHITE.value)
             self.screen.blit(algorithm_info_label, self.algo_label_start_pos)
 
         setup_grid()
@@ -135,7 +148,8 @@ class Visual:
                 for s in r:
                     pygame.draw.rect(self.screen, Colours.WHITE.value, s)
 
-            self.grid = [[1 for i in range(self.grid_size)] for ii in range(self.grid_size)]
+            self.grid = [[1 for i in range(self.grid_size)]
+                         for ii in range(self.grid_size)]
             self.start_cell = self.end_cell = None
             self.start_xy = self.end_xy = None
             self.edited_squares = []
@@ -157,7 +171,8 @@ class Visual:
             else:
                 self.algo_selection += 1
 
-            self.screen.fill(Colours.PURE_BLACK.value, (self.algo_label_start_pos[0], self.algo_label_start_pos[1], 100, 30))
+            self.screen.fill(Colours.PURE_BLACK.value,
+                             (self.algo_label_start_pos[0], self.algo_label_start_pos[1], 100, 30))
             name = self.algo_names[self.algo_selection]
             label = self.font.render(name, 1, Colours.WHITE.value)
             self.screen.blit(label, self.algo_label_start_pos)
@@ -169,10 +184,12 @@ class Visual:
 
             if self.start_cell and self.end_cell:
                 if self.algo_selection == 0:
-                    dijkstra = Dijkstra(self.screen, self.start_xy, self.end_xy, self.squares, self.grid, self.edited_squares)
+                    dijkstra = Dijkstra(
+                        self.screen, self.start_xy, self.end_xy, self.squares, self.grid, self.edited_squares)
                     result, self.edited_squares = dijkstra.find_path()
                 elif self.algo_selection == 1:
-                    a_star = AStar(self.screen, self.start_xy, self.end_xy, self.squares, self.grid, self.edited_squares)
+                    a_star = AStar(self.screen, self.start_xy, self.end_xy,
+                                   self.squares, self.grid, self.edited_squares)
                     result, self.edited_squares = a_star.find_path()
 
                 if result:
@@ -202,9 +219,11 @@ class Visual:
 
         def set_start_cell():
             if self.start_cell:
-                pygame.draw.rect(self.screen, Colours.WHITE.value, self.start_cell)
+                pygame.draw.rect(
+                    self.screen, Colours.WHITE.value, self.start_cell)
 
-            pygame.draw.rect(self.screen, self.mark_mode_colours[self.edit_mode], s)
+            pygame.draw.rect(
+                self.screen, self.mark_mode_colours[self.edit_mode], s)
             self.start_cell = s
             self.start_xy = (i, j)
 
@@ -213,9 +232,11 @@ class Visual:
 
         def set_end_cell():
             if self.end_cell:
-                pygame.draw.rect(self.screen, Colours.WHITE.value, self.end_cell)
+                pygame.draw.rect(
+                    self.screen, Colours.WHITE.value, self.end_cell)
 
-            pygame.draw.rect(self.screen, self.mark_mode_colours[self.edit_mode], s)
+            pygame.draw.rect(
+                self.screen, self.mark_mode_colours[self.edit_mode], s)
             self.end_cell = s
             self.end_xy = (i, j)
 
