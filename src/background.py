@@ -11,7 +11,7 @@ class Background():
             y = random.randint(0, 500)
             self.point.append([x, y])   
 
-    def draw(self, screen):        
+    def process(self, screen):        
         for i in range(self.num):
             self.point[i][1]+=1
             pygame.draw.circle(screen, WHITE, self.point[i], 2 )

@@ -1,13 +1,12 @@
 import pygame
 
 class Button():
-    def __init__(self, x, y, width, height, font, buttonText='Button', onclickFunction=None, onePress=False):
+    def __init__(self, x, y, width, height, font, buttonText='Button', onclickFunction=None):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.onclickFunction = onclickFunction
-        self.onePress = onePress
         
 
         self.fillColors = {
@@ -33,13 +32,10 @@ class Button():
         if self.buttonRect.collidepoint(mousePos):
             self.buttonSurface.fill(self.fillColors['hover'])
 
-            if pygame.mouse.get_pressed(num_buttons=3)[0]:
+            if pygame.mouse.get_pressed()[0]:
                 self.buttonSurface.fill(self.fillColors['pressed'])
 
-                if self.onePress:
-                    self.onclickFunction()
-
-                elif not self.alreadyPressed:
+                if not self.alreadyPressed:
                     self.onclickFunction()
                     self.alreadyPressed = True
 

@@ -33,30 +33,48 @@ def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x, y))
 
-def myFunction():
-        print("hola")
+def showMenu():
+    objects.clear()
+
+    objects.append(background)
+
+    startButton = button.Button(300, 200, 200, 75, font,'Start', start_button_on_click)
+    quitButton = button.Button(300, 300, 200, 75, font,'Quit', quit_game)
+    
+    objects.append(startButton)
+    objects.append(quitButton)
+
+def showAlgorithmScreen():
+    objects.clear()
+
+    quitButton = button.Button(300, 300, 200, 75, font,'Quit', quit_game)
+
+    objects.append(quitButton)
+
+def start_button_on_click():
+    showAlgorithmScreen()
+
+
+def quit_game():
+    pygame.quit()
+
 # Iniciamos el bucle que mantendra la pantalla abierta
-run = True
-while run:
+
+showMenu()
+while True:
     screen.fill((52, 78, 91))
 
-    background.draw(screen)
-    
     draw_text("A* ALGORITHM", font, TEXT_COL, 240, 100)
-    
-    customButton = button.Button(30, 30, 400, 100, font,'Button One (onePress)', myFunction)
-   
-    customButton.process(screen)
-
 
     # Manejador de eventos
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            quit_game()
+    
+    for object in objects:
+        object.process(screen)
      
 
     # Actualizamos la pantalla
     pygame.display.update()
     clock.tick(fps)
-
-pygame.quit()
