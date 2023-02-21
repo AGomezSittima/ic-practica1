@@ -1,36 +1,62 @@
-#!/usr/bin/env python3
-import pygame
-from pygame.locals import *
-from visual import Visual
+import pygame, random
+import button
+import background
+
+#Definir colores
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+
+# Iniciamos pygame
+pygame.init()
+# Definimos el tamaño de la pantalla
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 500
+
+# Creamos la primera pantalla 
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+clock = pygame.time.Clock()
+pygame.display.set_caption("Main Menu")
+fps = 60
+objects = []
+
+# Definimos las fuentes
+font = pygame.font.SysFont("arialblack", 40)
+# Definimos el color de letra
+TEXT_COL = (255, 255, 255)
+
+background = background.Background(50);
+
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
+
+def myFunction():
+        print("hola")
+# Iniciamos el bucle que mantendra la pantalla abierta
+run = True
+while run:
+    screen.fill((52, 78, 91))
+
+    background.draw(screen)
+    
+    draw_text("A* ALGORITHM", font, TEXT_COL, 240, 100)
+    
+    customButton = button.Button(30, 30, 400, 100, font,'Button One (onePress)', myFunction)
+   
+    customButton.process(screen)
 
 
-def main():
-    pygame.init()
-    pygame.display.set_caption("visual-pathfinder")
-    clock = pygame.time.Clock()
+    # Manejador de eventos
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+     
 
-    visual = Visual(pygame.font.SysFont("Ubuntu", 15))
+    # Actualizamos la pantalla
+    pygame.display.update()
+    clock.tick(fps)
 
-    done = 0
-    while not done:
-        mouse = pygame.mouse.get_pos()
-
-        # having paint_obstacle check inside default event loop prevents "continuous painting"
-        if pygame.mouse.get_pressed()[0]:
-            visual.check_paint_obstacle(mouse)
-
-        visual.check_button_highlight(mouse)
-
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT:
-                done = 1
-            elif e.type == pygame.MOUSEBUTTONDOWN:
-                visual.check_button_actions(mouse)
-                visual.check_cell_actions(mouse)
-
-        pygame.display.update()
-        clock.tick(60)
-
-
-if __name__ == "__main__":
-    main()
+pygame.quit()
