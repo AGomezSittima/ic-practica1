@@ -1,13 +1,13 @@
 import pygame
 
+
 class Button():
-    def __init__(self, x, y, width, height, font, buttonText='Button', onclickFunction=None):
-        self.x = x
-        self.y = y
+    def __init__(self, x, y, width, height, font, buttonText='Button', onclickFunction=None, pivot_center=True):
+        self.x = x if not pivot_center else x - width / 2
+        self.y = y if not pivot_center else y - height / 2
         self.width = width
         self.height = height
         self.onclickFunction = onclickFunction
-        
 
         self.fillColors = {
             'normal': '#ffffff',
@@ -22,10 +22,7 @@ class Button():
 
         self.alreadyPressed = False
 
-       
-
-    def process(self,screen):
-
+    def process(self, screen):
         mousePos = pygame.mouse.get_pos()
 
         self.buttonSurface.fill(self.fillColors['normal'])
