@@ -31,8 +31,6 @@ class Visual:
         self.screen.blit(text, (result_x, result_y))
 
     def show_menu_scene(self, screen_width, screen_height):
-        self.objects_to_proccess.clear()
-
         self.objects_to_proccess.append(Background(50))
 
         self.draw_text("A* ALGORITHM", self.font, self.TEXT_COL,
@@ -46,8 +44,6 @@ class Visual:
         self.objects_to_proccess.append(quit_button)
 
     def show_main_scene(self, screen_width, screen_height):
-        self.objects_to_proccess.clear()
-
         back_button = Button(
             screen_width / 2, 300, 200, 75, self.font, 'Back', self.back_button_on_click)
 
@@ -56,14 +52,16 @@ class Visual:
     def start_button_on_click(self):
         self.scene = Scene.Main
 
-        self.update(self.screen)
+        self.show()
 
     def back_button_on_click(self):
         self.scene = Scene.Menu
 
-        self.update(self.screen)
+        self.show()
 
     def show(self):
+        self.objects_to_proccess.clear()
+
         if self.scene == Scene.Menu:
             self.show_menu_scene(self.screen_width, self.screen_height)
         elif self.scene == Scene.Main:
@@ -77,5 +75,3 @@ class Visual:
         self.screen = screen
         self.screen_width = screen.get_width()
         self.screen_height = screen.get_height()
-
-        self.show()
