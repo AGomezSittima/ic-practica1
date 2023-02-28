@@ -41,7 +41,7 @@ class Visual:
             screen_width / 2, 300, 200, 75, self.font, 'Quit', self.on_quit)
 
         self.objects_to_proccess.append(start_button)
-        self.objects_to_proccess.append(quit_button)
+        # self.objects_to_proccess.append(quit_button)
 
     def show_main_scene(self, screen_width, screen_height):
         back_button = Button(
