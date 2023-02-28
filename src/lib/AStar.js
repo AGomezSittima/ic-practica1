@@ -47,6 +47,7 @@ export class SearchGrid {
 
   neighbourCell(cell, direction) {
     let neighbourCell;
+    console.log(cell)
     switch(direction) {
       case "left":
         neighbourCell = cell - 1;
@@ -65,6 +66,18 @@ export class SearchGrid {
         break;
       case "down":
         neighbourCell = cell + this.width;
+        break;
+      case "up-left":
+        neighbourCell = cell - 1 - this.width;
+        break;
+      case "up-right":
+        neighbourCell = cell + 1 - this.width;
+        break;
+      case "down-left":
+        neighbourCell = cell - 1 + this.width;
+        break;
+      case "down-right":
+        neighbourCell = cell + 1 + this.width;
         break;
       default:
         neighbourCell = null;
@@ -142,7 +155,7 @@ export class Agent {
   }
 
   updateOpenList() {
-    let neighbourDirections = ['left', 'up', 'right', 'down'];
+    let neighbourDirections = ['left', 'up', 'right', 'down', 'up-left', 'up-down', 'down-left', 'down-right'];
     if (this.steps % 2 === 0) {
       neighbourDirections.reverse();
     }
