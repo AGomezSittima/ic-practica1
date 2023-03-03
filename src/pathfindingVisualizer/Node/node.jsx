@@ -1,25 +1,23 @@
 import React from "react";
 import "./node.css";
+import { useState } from "react";
 
-export default function Node(props){
-
-    const {
-      row,
-      col,
-      isStart,
-      isFinish,
-      isWall,
-      isVisited,
-      isShortest,
-      onMouseEnter,
-      onMouseDown,
-      onMouseUp,
-      width,
-      height,
-      numRows,
-      numColumns,
-    } = props;
-
+export default function Node({
+  row,
+  col,
+  isStart,
+  isFinish,
+  isWall,
+  isVisited,
+  isShortest,
+  onMouseEnter,
+  onMouseDown,
+  onMouseUp,
+  width,
+  height,
+  numRows,
+  numColumns,
+}){
     const extraClass = isStart
       ? "node node-start"
       : isFinish
@@ -34,9 +32,7 @@ export default function Node(props){
 
     let cellWidth = Math.floor((width - 15) / numColumns);
     let cellHeight;
-    if (width > 1500) {
-      cellHeight = Math.floor((height - 70) / numRows);
-    } else if (width > 1000) {
+    if (width > 1000) {
       cellHeight = Math.floor((height - 70) / numRows);
     } else if (width > 500) {
       cellHeight = Math.floor((height - 60) / numRows);
@@ -52,7 +48,9 @@ export default function Node(props){
         onMouseEnter={() => onMouseEnter(row, col)}
         onMouseDown={() => onMouseDown(row, col)}
         onMouseUp={() => onMouseUp()}
-      ></div>
+      >
+
+      </div>
     );
 }
 
