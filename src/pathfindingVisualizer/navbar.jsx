@@ -16,6 +16,9 @@ export default function NavBar(props){
   const selectMaze = (selection) =>{
     if (props.visualizingAlgorithm || props.generatingMaze) 
       return;
+      
+    if (pathState) 
+      clearPath();
   
     if (selection === maze || maze === "Generate Maze" || maze === "Select a Maze!") 
       setMaze(selection);
@@ -26,9 +29,10 @@ export default function NavBar(props){
   }
 
   const visualizeAlgorithm = () => {
+
     if (props.visualizingAlgorithm || props.generatingMaze) 
       return;
-    
+   
     if (pathState) {
       clearTemp();
       return;
@@ -42,6 +46,7 @@ export default function NavBar(props){
     if (props.visualizingAlgorithm || props.generatingMaze) {
       return;
     }
+
     if (mazeState || pathState) {
       clearTemp();
     }
@@ -61,7 +66,6 @@ export default function NavBar(props){
       return;
     props.clearGrid();
 
-    clearPath();
     setMaze("GenerateMaze");
     setPathState(false);
     setMazeState(false);
@@ -216,6 +220,11 @@ export default function NavBar(props){
             >
               Clear Gird
             </button>
+          </li>
+          <li>
+            <input type="number" onChange={(event) => props.setNumRows(event.target.value)}/>
+            <input type="number" onChange={(event) => props.setNumColumns(event.target.value)}/>
+
           </li>
         </ul>
       </div>
