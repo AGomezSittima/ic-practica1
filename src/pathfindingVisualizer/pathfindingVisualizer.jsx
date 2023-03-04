@@ -451,23 +451,3 @@ const updateNodesForRender = (
     newGrid[node.row][node.col] = newNode;
   }
 };
-
-const getVisitedNodesInOrder = (
-  visitedNodesInOrderStart,
-  visitedNodesInOrderFinish
-) => {
-  let visitedNodesInOrder = [];
-  let n = Math.max(
-    visitedNodesInOrderStart.length,
-    visitedNodesInOrderFinish.length
-  );
-  for (let i = 0; i < n; i++) {
-    if (visitedNodesInOrderStart[i] !== undefined) {
-      visitedNodesInOrder.push(visitedNodesInOrderStart[i]);
-    }
-    if (visitedNodesInOrderFinish[i] !== undefined) {
-      visitedNodesInOrder.push(visitedNodesInOrderFinish[i]);
-    }
-  }
-  return visitedNodesInOrder;
-};
