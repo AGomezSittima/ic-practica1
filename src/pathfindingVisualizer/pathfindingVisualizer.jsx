@@ -22,20 +22,23 @@ const finishNodeCol = startFinishNode[3];
 
 
 export default function PathfindingVisualizer() {
-  let [grid, setGrid] = useState([]);
-  let [mouseIsPressed, setMouseIsPressed] = useState(false);
-  let [visualizingAlgorithm, setVisualizingAlgorithm] = useState(false);
-  let [generatingMaze, setGeneratingMaze] = useState(false);
-  let [width, setWidth] = useState(window.innerWidth);
-  let [height, setHeight] = useState(window.innerHeight);
-  let [numRows, setNumRows] = useState(initialNumRows);
-  let [numColumns, setNumColumns] = useState(initialNumColumns);
-  let [speed, setSpeed] = useState(10);
-  let [mazeSpeed, setMazeSpeed] = useState(10);
+  const [grid, setGrid] = useState([]);
+  const [mouseIsPressed, setMouseIsPressed] = useState(false);
+  const [visualizingAlgorithm, setVisualizingAlgorithm] = useState(false);
+  const [generatingMaze, setGeneratingMaze] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+  const [numRows, setNumRows] = useState(initialNumRows);
+  const [numColumns, setNumColumns] = useState(initialNumColumns);
+  const [speed, setSpeed] = useState(10);
+  const [mazeSpeed, setMazeSpeed] = useState(10);
+  const [isSettingWalls, setIsSettingWalls] = useState(true);
+  const [waypointList, setWaypointList] = useState([]);
 
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
     const grid = getInitialGrid(numRows, numColumns);
+    if(isSettingWalls)
     setGrid(grid);
   }, [])
 
@@ -49,16 +52,26 @@ export default function PathfindingVisualizer() {
     setMazeSpeed(maze);
   };
 
+  const updateNodeType = (type) => {
+    setIsSettingWalls(type === "Wall");
+  }
+
   const handleMouseDown = (row, col) => {
-    const newGrid = getNewGridWithWalls(grid, row, col);
+    const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
+
+    console.log(newWaypointList);
+
     setGrid(newGrid);
+    setWaypointList(newWaypointList);
     setMouseIsPressed(true);
   }
 
   const handleMouseEnter = (row, col) => {
     if (mouseIsPressed) {
-      const newGrid = getNewGridWithWalls(grid, row, col);
+      const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
+      
       setGrid(newGrid);
+      setWaypointList(newWaypointList);
       setMouseIsPressed(true);
     }
   }
@@ -216,7 +229,7 @@ export default function PathfindingVisualizer() {
       animateMaze(walls);
     }, mazeSpeed);
   }
-
+  
   
   return (
     <>
@@ -228,6 +241,7 @@ export default function PathfindingVisualizer() {
               clearGrid={clearGrid}
               clearPath={clearPath}
               updateSpeed={updateSpeed}
+              updateNodeType = {updateNodeType}
       />
       <div
         className={`grid ${visualizingAlgorithm || generatingMaze ? "pe-none":"pe-auto"} `}
@@ -244,6 +258,7 @@ export default function PathfindingVisualizer() {
                   isVisited,
                   isShortest,
                   isWall,
+                  isWaypoint
                 } = node;
                 return (
                   <Node
@@ -255,6 +270,7 @@ export default function PathfindingVisualizer() {
                     isVisited={isVisited}
                     isShortest={isShortest}
                     isWall={isWall}
+                    isWaypoint={isWaypoint}
                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                     onMouseEnter={(row, col) =>
                       handleMouseEnter(row, col)
@@ -379,15 +395,35 @@ const createNode = (row, col) => {
   };
 };
 
-const getNewGridWithWalls = (grid, row, col) => {
+const getNewGridWithWalls = (grid, waypointList, row, col) => {
   let newGrid = grid.slice();
   let node = grid[row][col];
   let newNode = {
     ...node,
     isWall: !node.isWall,
+    isWaypoint: false
   };
   newGrid[row][col] = newNode;
-  return newGrid;
+  return { newGrid, waypointList };
+};
+
+const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
+  let newWaypointList = waypointList;
+  let newGrid = grid.slice();
+  let node = grid[row][col];
+  let newNode = {
+    ...node,
+    isWall: false,
+    isWaypoint: !node.isWaypoint
+  };
+  newGrid[row][col] = newNode;
+
+  if(newNode.isWaypoint)
+    newWaypointList = [...newWaypointList, newNode];
+  else
+    newWaypointList = newWaypointList.filter(node => node.row !== row && node.col !== col);
+
+  return { newGrid, newWaypointList };
 };
 
 const getNewGridWithMaze = (grid, walls) => {

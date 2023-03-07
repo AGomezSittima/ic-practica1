@@ -10,6 +10,7 @@ export default function Node({
   isWall,
   isVisited,
   isShortest,
+  isWaypoint,
   onMouseEnter,
   onMouseDown,
   onMouseUp,
@@ -23,13 +24,14 @@ export default function Node({
       : isFinish
       ? "node node-finish"
       : isWall
-      ? "node-wall"
+      ? "node-wall" 
       : isShortest
       ? "node node-shortest-path"
       : isVisited
       ? "node node-visited"
+      : isWaypoint
+      ? "node node-waypoint"
       : "node";
-
     let cellWidth = Math.floor((width - 15) / numColumns);
     let cellHeight;
     if (width > 1000) {

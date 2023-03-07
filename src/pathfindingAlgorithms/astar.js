@@ -23,19 +23,19 @@ export function astar(grid, startNode, finishNode) {
         unvisitedNodes.unshift(neighbour);
         neighbour.distance = distance;
         neighbour.totalDistance =
-          distance + manhattenDistance(neighbour, finishNode);
+          distance + manhattanDistance(neighbour, finishNode);
         neighbour.previousNode = closestNode;
       } else if (distance < neighbour.distance) {
         neighbour.distance = distance;
         neighbour.totalDistance =
-          distance + manhattenDistance(neighbour, finishNode);
+          distance + manhattanDistance(neighbour, finishNode);
         neighbour.previousNode = closestNode;
       }
     }
   }
   return visitedNodesInOrder;
-}
-
+} 
+//  TODO Cambiar a un bucle or
 function getNeighbours(node, grid) {
   let neighbours = [];
   let { row, col } = node;
@@ -71,7 +71,7 @@ function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
   return true;
 }
 
-function manhattenDistance(node, finishNode) {
+function manhattanDistance(node, finishNode) {
   let x = Math.abs(node.row - finishNode.row);
   let y = Math.abs(node.col - finishNode.col);
   return x + y;

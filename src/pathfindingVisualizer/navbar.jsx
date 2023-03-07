@@ -5,12 +5,14 @@ const SPEED_OPTIONS = {
   Medium : [25, 20],
   Fast : [10, 10],
 }
+
 export default function NavBar(props){
 
-  let [maze, setMaze] = useState("Generate Maze");
-  let [pathState, setPathState] = useState(false);
-  let [mazeState, setMazeState] = useState(false);
-  let [speedState, setSpeedState] = useState("Speed");
+  const [maze, setMaze] = useState("Generate Maze");
+  const [pathState, setPathState] = useState(false);
+  const [mazeState, setMazeState] = useState(false);
+  const [speedState, setSpeedState] = useState("Speed");
+  const [typeState, setTypeState] = useState("Wall");
 
 
   const selectMaze = (selection) =>{
@@ -105,6 +107,14 @@ export default function NavBar(props){
     props.updateSpeed(value[0], value[1]);
   }
 
+  const changeNodeType = (type) => {
+    if (props.visualizingAlgorithm || props.generatingMaze) 
+      return;
+
+    setTypeState(type);
+      
+    props.updateNodeType(type);
+  }
   
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -212,6 +222,36 @@ export default function NavBar(props){
             </div>
           </li>
 
+          <li className="nav-item dropdown">
+            <div className="dropdown">
+              <button
+                className="btn btn-info dropdown-toggle"
+                type="button"
+                id="dropdownMenu1"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {typeState}
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeType("Wall")}
+                >
+                  Wall 
+                </button>
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeType("Waypoint")}
+                >
+                  Waypoint
+                </button>
+              </div>
+            </div>
+          </li>
           <li>
             <button
               type="button"
