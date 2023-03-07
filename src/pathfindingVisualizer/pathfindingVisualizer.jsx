@@ -19,7 +19,7 @@ const startNodeCol = startFinishNode[1];
 const finishNodeRow = startFinishNode[2];
 const finishNodeCol = startFinishNode[3];
 
-const Context = React.createContext();
+
 
 export default function PathfindingVisualizer() {
   let [grid, setGrid] = useState([]);

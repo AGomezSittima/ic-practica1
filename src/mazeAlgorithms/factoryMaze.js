@@ -11,6 +11,5 @@ const MAZES = {
     "Generate Horizontal Maze": horizontalMaze,
 }
 export default function factoryMaze(mazeOption) {
-    console.log(MAZES[mazeOption])
     return MAZES[mazeOption];
 }
