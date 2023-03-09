@@ -16,25 +16,25 @@ export default function NavBar(props){
 
 
   const selectMaze = (selection) =>{
-    if (props.visualizingAlgorithm || props.generatingMaze) 
+    if (props.visualizingAlgorithm || props.generatingMaze)
       return;
 
-    if (pathState) 
+    if (pathState)
       clearPath();
-  
-    if (selection === maze || maze === "Generate Maze" || maze === "Select a Maze!") 
+
+    if (selection === maze || maze === "Generate Maze" || maze === "Select a Maze!")
       setMaze(selection);
-    else if (pathState) 
+    else if (pathState)
       clearGrid();
-    
+
     setMaze(selection);
   }
 
   const visualizeAlgorithm = () => {
 
-    if (props.visualizingAlgorithm || props.generatingMaze) 
+    if (props.visualizingAlgorithm || props.generatingMaze)
       return;
-   
+
     if (pathState) {
       clearTemp();
       return;
@@ -64,7 +64,7 @@ export default function NavBar(props){
   }
 
   const clearGrid = () => {
-    if (props.visualizingAlgorithm || props.generatingMaze) 
+    if (props.visualizingAlgorithm || props.generatingMaze)
       return;
     props.clearGrid();
 
@@ -74,9 +74,9 @@ export default function NavBar(props){
   }
 
   const clearPath = () => {
-    if (props.visualizingAlgorithm || props.generatingMaze) 
+    if (props.visualizingAlgorithm || props.generatingMaze)
       return;
-    
+
     props.clearPath();
 
     setPathState(false);
@@ -84,7 +84,7 @@ export default function NavBar(props){
   }
 
   const clearTemp = () => {
-    if (props.visualizingAlgorithm || props.generatingMaze) 
+    if (props.visualizingAlgorithm || props.generatingMaze)
       return;
 
     props.clearGrid();
@@ -95,11 +95,11 @@ export default function NavBar(props){
   }
 
   const changeSpeed = (speed) => {
-    if (props.visualizingAlgorithm || props.generatingMaze) 
+    if (props.visualizingAlgorithm || props.generatingMaze)
       return;
 
     let value = [10, 10];
-    if (speed in SPEED_OPTIONS) 
+    if (speed in SPEED_OPTIONS)
       value = SPEED_OPTIONS[speed];
 
     setSpeedState(speed);
@@ -108,14 +108,14 @@ export default function NavBar(props){
   }
 
   const changeNodeType = (type) => {
-    if (props.visualizingAlgorithm || props.generatingMaze) 
+    if (props.visualizingAlgorithm || props.generatingMaze)
       return;
 
     setTypeState(type);
-      
+
     props.updateNodeType(type);
   }
-  
+
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark">
       <div className="navbar-collapse justify-content-center" id="navbarNavDropdown">
@@ -183,7 +183,7 @@ export default function NavBar(props){
               {maze}
             </button>
           </li>
-        
+
           <li className="nav-item dropdown">
             <div className="dropdown">
               <button
@@ -240,7 +240,7 @@ export default function NavBar(props){
                   type="button"
                   onClick={() => changeNodeType("Wall")}
                 >
-                  Wall 
+                  Wall
                 </button>
                 <button
                   className="dropdown-item btn-light"
@@ -265,5 +265,5 @@ export default function NavBar(props){
       </div>
     </nav>
   );
-  
+
 }

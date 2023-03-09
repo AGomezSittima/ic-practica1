@@ -57,6 +57,7 @@ export default function PathfindingVisualizer() {
   }
 
   const handleMouseDown = (row, col) => {
+    console.log(waypointList);
     const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
 
     console.log(newWaypointList);
@@ -69,7 +70,7 @@ export default function PathfindingVisualizer() {
   const handleMouseEnter = (row, col) => {
     if (mouseIsPressed) {
       const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
-      
+
       setGrid(newGrid);
       setWaypointList(newWaypointList);
       setMouseIsPressed(true);
@@ -195,7 +196,7 @@ export default function PathfindingVisualizer() {
       animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
     }, speed);
   }
-  
+
   const animateMaze = (walls) => {
     for (let i = 0; i <= walls.length; i++) {
       if (i === walls.length) {
@@ -229,8 +230,8 @@ export default function PathfindingVisualizer() {
       animateMaze(walls);
     }, mazeSpeed);
   }
-  
-  
+
+
   return (
     <>
        <NavBar
@@ -289,7 +290,7 @@ export default function PathfindingVisualizer() {
       </div>
     </>
   );
-  
+
 }
 
 function getInitialNum(width, height) {
@@ -396,6 +397,7 @@ const createNode = (row, col) => {
 };
 
 const getNewGridWithWalls = (grid, waypointList, row, col) => {
+  let newWaypointList = waypointList;
   let newGrid = grid.slice();
   let node = grid[row][col];
   let newNode = {
@@ -404,7 +406,7 @@ const getNewGridWithWalls = (grid, waypointList, row, col) => {
     isWaypoint: false
   };
   newGrid[row][col] = newNode;
-  return { newGrid, waypointList };
+  return { newGrid, newWaypointList };
 };
 
 const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
