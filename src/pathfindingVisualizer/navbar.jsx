@@ -68,7 +68,7 @@ export default function NavBar(props){
       return;
     props.clearGrid();
 
-    setMaze("GenerateMaze");
+    setMaze("Generate Maze");
     setPathState(false);
     setMazeState(false);
   }

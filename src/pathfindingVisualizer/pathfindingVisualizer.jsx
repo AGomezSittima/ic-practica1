@@ -201,8 +201,7 @@ export default function PathfindingVisualizer() {
     for (let i = 0; i <= walls.length; i++) {
       if (i === walls.length) {
         setTimeout(() => {
-          clearGrid();
-          let newGrid = getNewGridWithMaze(grid, walls);
+          let newGrid = getNewGridWithMaze(getInitialGrid(numRows, numColumns), walls);
           setGrid(newGrid);
           setGeneratingMaze(false);
         }, i * mazeSpeed);

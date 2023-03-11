@@ -4,12 +4,17 @@ import { recursiveDivisionMaze } from "./recursiveDivision";
 import { verticalMaze } from "./verticalMaze";
 import { horizontalMaze } from "./horizontalMaze";
 
-const MAZES = {
-    "Generate Random Maze": randomMaze,
-    "Generate Recursive Maze": recursiveDivisionMaze,
-    "Generate Vertical Maze": verticalMaze,
-    "Generate Horizontal Maze": horizontalMaze,
-}
 export default function factoryMaze(mazeOption) {
-    return MAZES[mazeOption];
+    switch (mazeOption) {
+        case  "Generate Random Maze": 
+            return randomMaze;
+        case "Generate Recursive Maze":
+            return recursiveDivisionMaze;
+        case "Generate Vertical Maze":
+            return verticalMaze;
+        case "Generate Horizontal Maze":
+            return horizontalMaze;
+        default:
+            return () => [];
+    }
 }
