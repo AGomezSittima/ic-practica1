@@ -258,7 +258,7 @@ export default function NavBar(props){
               className="btn btn-danger"
               onClick={() => clearGrid()}
             >
-              Clear Gird
+              Clear Grid
             </button>
           </li>
         </ul>

@@ -2,6 +2,7 @@ export function astar(grid, startNode, finishNode) {
   if (!startNode || !finishNode || startNode === finishNode) {
     return false;
   }
+  console.log(grid.some(gri => gri.some(g => g.isVisited)));
   let unvisitedNodes = []; //open list
   let visitedNodesInOrder = []; //closed list
   startNode.distance = 0;
@@ -22,8 +23,7 @@ export function astar(grid, startNode, finishNode) {
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)) {
         unvisitedNodes.unshift(neighbour);
         neighbour.distance = distance;
-        neighbour.totalDistance =
-          distance + manhattanDistance(neighbour, finishNode);
+        neighbour.totalDistance = distance + manhattanDistance(neighbour, finishNode);
         neighbour.previousNode = closestNode;
       } else if (distance < neighbour.distance) {
         neighbour.distance = distance;
@@ -35,6 +35,33 @@ export function astar(grid, startNode, finishNode) {
   }
   return visitedNodesInOrder;
 } 
+export function astarWayPoint(grid, startNode, finishNode, waypointList){
+  let result = [];
+  let tempStartNode = startNode;
+  for(let waypoint of waypointList){
+    let path = astar(resetIsVisited(grid), tempStartNode, waypoint);
+    tempStartNode = waypoint;
+    result = [...result, ...path];
+  }
+  result = [...result,...astar(resetIsVisited(grid), tempStartNode, finishNode)];
+  console.log(result)
+  return result;
+}
+function resetIsVisited(grid){
+  let newGrid = grid.slice();
+  for (let row of grid) {
+    for (let node of row) {
+      if(node.isStart || node.isFinish || node.isWall || node.isWaypoint)
+        continue;
+      let newNode = {
+        ...node,
+        isVisited: false,
+      };
+      newGrid[node.row][node.col] = newNode;
+    }
+  }
+  return newGrid;
+}
 //  TODO Cambiar a un bucle or
 function getNeighbours(node, grid) {
   let neighbours = [];
@@ -74,7 +101,7 @@ function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
 function manhattanDistance(node, finishNode) {
   let x = Math.abs(node.row - finishNode.row);
   let y = Math.abs(node.col - finishNode.col);
-  return x + y;
+  return x*x + y*y;
 }
 
 export function getNodesInShortestPathOrderAstar(finishNode) {

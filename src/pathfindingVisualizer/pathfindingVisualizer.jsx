@@ -5,6 +5,7 @@ import NavBar from "./navbar";
 
 import {
   astar,
+  astarWayPoint,
   getNodesInShortestPathOrderAstar,
 } from "../pathfindingAlgorithms/astar";
 import factoryMaze from "../mazeAlgorithms/factoryMaze";
@@ -41,7 +42,7 @@ export default function PathfindingVisualizer() {
     if(isSettingWalls)
     setGrid(grid);
   }, [])
-
+ 
   const updateDimensions = () => {
     setWidth(window.innerWidth);
     setHeight(window.innerHeight);
@@ -57,10 +58,7 @@ export default function PathfindingVisualizer() {
   }
 
   const handleMouseDown = (row, col) => {
-    console.log(waypointList);
     const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
-
-    console.log(newWaypointList);
 
     setGrid(newGrid);
     setWaypointList(newWaypointList);
@@ -100,6 +98,7 @@ export default function PathfindingVisualizer() {
     const newGrid = getInitialGrid(numRows, numColumns);
 
     setGrid(newGrid);
+    setWaypointList([]);
     setVisualizingAlgorithm(false);
     setGeneratingMaze(false);
   }
@@ -130,23 +129,23 @@ export default function PathfindingVisualizer() {
       setVisualizingAlgorithm(false);
     for (let i = 1; i < nodesInShortestPathOrder.length; i++) {
       if (i === nodesInShortestPathOrder.length - 1) {
-        setTimeout(() => {
-          let newGrid = updateNodesForRender(
-            grid,
-            nodesInShortestPathOrder,
-            visitedNodesInOrder
-          );
-          setGrid(newGrid);
-          setVisualizingAlgorithm(false);
-        }, i * (3 * speed));
+        let newGrid = updateNodesForRender(
+          grid,
+          nodesInShortestPathOrder,
+          visitedNodesInOrder
+        );
+        setGrid(newGrid);
+        setVisualizingAlgorithm(false);
+        // setTimeout(() => {
+        // }, i * (3 * speed));
         return;
       }
       let node = nodesInShortestPathOrder[i];
-      setTimeout(() => {
-        //shortest path node
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-shortest-path";
-      }, i * (3 * speed));
+      //shortest path node
+      document.getElementById(`node-${node.row}-${node.col}`).className =
+        "node node-shortest-path";
+      // setTimeout(() => {
+      // }, i * (3 * speed));
     }
   };
 
@@ -165,19 +164,19 @@ export default function PathfindingVisualizer() {
     for (let i = 1; i <= visitedNodesInOrder.length; i++) {
       let node = visitedNodesInOrder[i];
       if (i === visitedNodesInOrder.length) {
-        setTimeout(() => {
-          animateShortestPath(
-            nodesInShortestPathOrder,
-            visitedNodesInOrder
-          );
-        }, i * speed);
+        animateShortestPath(
+          nodesInShortestPathOrder,
+          visitedNodesInOrder
+        );
+        // setTimeout(() => {
+        // }, i * speed);
         return;
       }
-      setTimeout(() => {
-        //visited node
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-visited";
-      }, i * speed);
+      //visited node
+      document.getElementById(`node-${node.row}-${node.col}`).className =
+        "node node-visited";
+      // setTimeout(() => {
+      // }, i * speed);
     }
   };
 
@@ -185,11 +184,12 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
+    console.log(waypointList);
     setVisualizingAlgorithm(true)
     setTimeout(() => {
       const startNode = grid[startNodeRow][startNodeCol];
       const finishNode = grid[finishNodeRow][finishNodeCol];
-      const visitedNodesInOrder = astar(grid, startNode, finishNode);
+      const visitedNodesInOrder = astarWayPoint(grid, startNode, finishNode, waypointList);
       const nodesInShortestPathOrder = getNodesInShortestPathOrderAstar(
         finishNode
       );
@@ -201,7 +201,7 @@ export default function PathfindingVisualizer() {
     for (let i = 0; i <= walls.length; i++) {
       if (i === walls.length) {
         setTimeout(() => {
-          let newGrid = getNewGridWithMaze(getInitialGrid(numRows, numColumns), walls);
+          let newGrid = getNewGridWithMaze(getInitialGrid(numRows,numColumns), walls);
           setGrid(newGrid);
           setGeneratingMaze(false);
         }, i * mazeSpeed);
@@ -246,6 +246,7 @@ export default function PathfindingVisualizer() {
       <div
         className={`grid ${visualizingAlgorithm || generatingMaze ? "pe-none":"pe-auto"} `}
       >
+
         {grid.map((row, rowId) => {
           return (
             <div key={rowId}>
@@ -379,7 +380,7 @@ const getInitialGrid = (numRows, numColumns) => {
   }
   return grid;
 };
-
+// Los nodos del array grid son creados por esto
 const createNode = (row, col) => {
   return {
     row,
@@ -391,6 +392,7 @@ const createNode = (row, col) => {
     isVisited: false,
     isShortest: false,
     isWall: false,
+    isWaypoint:false,
     previousNode: null,
   };
 };
