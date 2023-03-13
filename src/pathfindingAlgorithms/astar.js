@@ -1,8 +1,8 @@
-export function astar(grid, startNode, finishNode) {
+function astar(grid, startNode, finishNode) {
   if (!startNode || !finishNode || startNode === finishNode) {
     return false;
   }
-  console.log(grid.some(gri => gri.some(g => g.isVisited)));
+
   let unvisitedNodes = []; //open list
   let visitedNodesInOrder = []; //closed list
   startNode.distance = 0;
@@ -34,7 +34,7 @@ export function astar(grid, startNode, finishNode) {
     }
   }
   return visitedNodesInOrder;
-} 
+}
 export function astarWayPoint(grid, startNode, finishNode, waypointList){
   let result = [];
   let tempStartNode = startNode;
@@ -44,19 +44,24 @@ export function astarWayPoint(grid, startNode, finishNode, waypointList){
     result = [...result, ...path];
   }
   result = [...result,...astar(resetIsVisited(grid), tempStartNode, finishNode)];
-  console.log(result)
   return result;
 }
 function resetIsVisited(grid){
   let newGrid = grid.slice();
   for (let row of grid) {
     for (let node of row) {
-      if(node.isStart || node.isFinish || node.isWall || node.isWaypoint)
+      if(node.isWaypoint || node.isFinish || node.isWall)
         continue;
+
       let newNode = {
         ...node,
+        distance: Infinity,
+        totalDistance: Infinity,
         isVisited: false,
+        isShortest: false,
+        previousNode: null,
       };
+
       newGrid[node.row][node.col] = newNode;
     }
   }
@@ -101,7 +106,7 @@ function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
 function manhattanDistance(node, finishNode) {
   let x = Math.abs(node.row - finishNode.row);
   let y = Math.abs(node.col - finishNode.col);
-  return x*x + y*y;
+  return x + y;
 }
 
 export function getNodesInShortestPathOrderAstar(finishNode) {

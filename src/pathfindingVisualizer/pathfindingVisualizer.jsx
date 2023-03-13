@@ -42,7 +42,7 @@ export default function PathfindingVisualizer() {
     if(isSettingWalls)
     setGrid(grid);
   }, [])
- 
+
   const updateDimensions = () => {
     setWidth(window.innerWidth);
     setHeight(window.innerHeight);
@@ -184,7 +184,7 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-    console.log(waypointList);
+
     setVisualizingAlgorithm(true)
     setTimeout(() => {
       const startNode = grid[startNodeRow][startNodeCol];
@@ -425,6 +425,8 @@ const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
     newWaypointList = [...newWaypointList, newNode];
   else
     newWaypointList = newWaypointList.filter(node => node.row !== row && node.col !== col);
+
+  console.log(waypointList);
 
   return { newGrid, newWaypointList };
 };
