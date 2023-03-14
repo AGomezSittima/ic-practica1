@@ -19,8 +19,6 @@ const startNodeCol = startFinishNode[1];
 const finishNodeRow = startFinishNode[2];
 const finishNodeCol = startFinishNode[3];
 
-
-
 export default function PathfindingVisualizer() {
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
@@ -32,13 +30,13 @@ export default function PathfindingVisualizer() {
   const [numColumns, setNumColumns] = useState(initialNumColumns);
   const [speed, setSpeed] = useState(10);
   const [mazeSpeed, setMazeSpeed] = useState(10);
-  const [isSettingWalls, setIsSettingWalls] = useState(true);
+  const [nodeType, setNodeType] = useState("Wall");
   const [waypointList, setWaypointList] = useState([]);
 
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
     const grid = getInitialGrid(numRows, numColumns);
-    if(isSettingWalls)
+    if(nodeType)
     setGrid(grid);
   }, [])
 
@@ -53,11 +51,12 @@ export default function PathfindingVisualizer() {
   };
 
   const updateNodeType = (type) => {
-    setIsSettingWalls(type === "Wall");
+    setNodeType(type);
   }
 
   const handleMouseDown = (row, col) => {
-    const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
+    const {newGrid, newWaypointList } = nodeType === "Wall"
+    ? getNewGridWithWalls(grid, waypointList, row, col) : nodeType === "Waypoint" ? getNewGridWithWaypoint(grid, waypointList, row, col) : getNewGridWithRisky(grid, waypointList, row, col);
 
     setGrid(newGrid);
     setWaypointList(newWaypointList);
@@ -66,7 +65,9 @@ export default function PathfindingVisualizer() {
 
   const handleMouseEnter = (row, col) => {
     if (mouseIsPressed) {
-      const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
+      const {newGrid, newWaypointList } = nodeType === "Wall"
+      ? getNewGridWithWalls(grid, waypointList, row, col) : nodeType === "Waypoint"
+      ? getNewGridWithWaypoint(grid, waypointList, row, col) : getNewGridWithRisky(grid, waypointList, row, col);
 
       setGrid(newGrid);
       setWaypointList(newWaypointList);
@@ -244,7 +245,7 @@ export default function PathfindingVisualizer() {
       let wall = walls[i];
       let node = grid[wall[0]][wall[1]];
       document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-wall-animated";
+          "node node-wall";
       // setTimeout(() => {
       //   //Walls
       //   document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -258,12 +259,18 @@ export default function PathfindingVisualizer() {
       return;
     }
     setGeneratingMaze(true);
-    setTimeout(() => {
-      const startNode = grid[startNodeRow][startNodeCol];
-      const finishNode = grid[finishNodeRow][finishNodeCol];
-      const walls = factoryMaze(maze)(grid, startNode, finishNode);
-      animateMaze(walls);
-    }, mazeSpeed);
+
+    const startNode = grid[startNodeRow][startNodeCol];
+    const finishNode = grid[finishNodeRow][finishNodeCol];
+    const walls = factoryMaze(maze)(grid, startNode, finishNode);
+    animateMaze(walls);
+
+    // setTimeout(() => {
+    //   const startNode = grid[startNodeRow][startNodeCol];
+    //   const finishNode = grid[finishNodeRow][finishNodeCol];
+    //   const walls = factoryMaze(maze)(grid, startNode, finishNode);
+    //   animateMaze(walls);
+    // }, mazeSpeed);
   }
 
 
@@ -460,6 +467,20 @@ const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
   else
     newWaypointList = newWaypointList.filter(node => node.row !== row && node.col !== col);
 
+  return { newGrid, newWaypointList };
+};
+
+const getNewGridWithRisky = (grid, waypointList, row, col) => {
+  let newWaypointList = waypointList;
+  let newGrid = grid.slice();
+  let node = grid[row][col];
+  let newNode = {
+    ...node,
+    isWall: false,
+    isWaypoint: false,
+    isRisky: !node.isRisky
+  };
+  newGrid[row][col] = newNode;
   return { newGrid, newWaypointList };
 };
 
