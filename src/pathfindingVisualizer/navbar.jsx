@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import "./navbar.css";
-const SPEED_OPTIONS = {
-  Slow : [50, 30],
-  Medium : [25, 20],
-  Fast : [10, 10],
-}
 
 export default function NavBar(props){
 
   const [maze, setMaze] = useState("Generate Maze");
   const [pathState, setPathState] = useState(false);
   const [mazeState, setMazeState] = useState(false);
-  const [speedState, setSpeedState] = useState("Speed");
   const [typeState, setTypeState] = useState("Wall");
 
 
@@ -94,19 +88,6 @@ export default function NavBar(props){
 
   }
 
-  const changeSpeed = (speed) => {
-    if (props.visualizingAlgorithm || props.generatingMaze)
-      return;
-
-    let value = [10, 10];
-    if (speed in SPEED_OPTIONS)
-      value = SPEED_OPTIONS[speed];
-
-    setSpeedState(speed);
-
-    props.updateSpeed(value[0], value[1]);
-  }
-
   const changeNodeType = (type) => {
     if (props.visualizingAlgorithm || props.generatingMaze)
       return;
@@ -182,44 +163,6 @@ export default function NavBar(props){
             >
               {maze}
             </button>
-          </li>
-
-          <li className="nav-item dropdown">
-            <div className="dropdown">
-              <button
-                className="btn btn-info dropdown-toggle"
-                type="button"
-                id="dropdownMenu1"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {speedState}
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <button
-                  className="dropdown-item btn-light"
-                  type="button"
-                  onClick={() => changeSpeed("Slow")}
-                >
-                  Slow
-                </button>
-                <button
-                  className="dropdown-item btn-light"
-                  type="button"
-                  onClick={() => changeSpeed("Medium")}
-                >
-                  Medium
-                </button>
-                <button
-                  className="dropdown-item btn-light"
-                  type="button"
-                  onClick={() => changeSpeed("Fast")}
-                >
-                  Fast
-                </button>
-              </div>
-            </div>
           </li>
 
           <li className="nav-item dropdown">

@@ -30,8 +30,6 @@ export default function PathfindingVisualizer() {
   const [height, setHeight] = useState(window.innerHeight);
   const [numRows, setNumRows] = useState(initialNumRows);
   const [numColumns, setNumColumns] = useState(initialNumColumns);
-  const [speed, setSpeed] = useState(10);
-  const [mazeSpeed, setMazeSpeed] = useState(10);
   const [isSettingWalls, setIsSettingWalls] = useState(true);
   const [waypointList, setWaypointList] = useState([]);
 
@@ -45,11 +43,6 @@ export default function PathfindingVisualizer() {
   const updateDimensions = () => {
     setWidth(window.innerWidth);
     setHeight(window.innerHeight);
-  };
-
-  const updateSpeed = (path, maze) => {
-    setSpeed(path);
-    setMazeSpeed(maze);
   };
 
   const updateNodeType = (type) => {
@@ -147,7 +140,8 @@ export default function PathfindingVisualizer() {
         return;
       }
       let node = nodesInShortestPathOrder[i];
-      document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
+      node.isShortest = true;
+    
       // setTimeout(() => {
       //   //shortest path node
       //   document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
@@ -182,7 +176,7 @@ export default function PathfindingVisualizer() {
         // }, i * speed);
         return;
       }
-      document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
+      node.isVisited = true;
       // setTimeout(() => {
       //   //visited node
       //   document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -258,12 +252,12 @@ export default function PathfindingVisualizer() {
       return;
     }
     setGeneratingMaze(true);
-    setTimeout(() => {
-      const startNode = grid[startNodeRow][startNodeCol];
-      const finishNode = grid[finishNodeRow][finishNodeCol];
-      const walls = factoryMaze(maze)(grid, startNode, finishNode);
-      animateMaze(walls);
-    }, mazeSpeed);
+    const startNode = grid[startNodeRow][startNodeCol];
+    const finishNode = grid[finishNodeRow][finishNodeCol];
+    const walls = factoryMaze(maze)(grid, startNode, finishNode);
+    animateMaze(walls);
+    // setTimeout(() => {
+    // }, mazeSpeed);
   }
 
 
@@ -276,7 +270,6 @@ export default function PathfindingVisualizer() {
               generateMaze={generateMaze}
               clearGrid={clearGrid}
               clearPath={clearPath}
-              updateSpeed={updateSpeed}
               updateNodeType = {updateNodeType}
       />
       <div

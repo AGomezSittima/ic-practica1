@@ -25,13 +25,14 @@ export default function Node({
       ? "node node-finish"
       : isWall
       ? "node-wall" 
+      : isWaypoint
+      ? "node node-waypoint"
       : isShortest
       ? "node node-shortest-path"
       : isVisited
       ? "node node-visited"
-      : isWaypoint
-      ? "node node-waypoint"
       : "node";
+    
     let cellWidth = Math.floor((width - 15) / numColumns);
     let cellHeight;
     if (width > 1000) {
