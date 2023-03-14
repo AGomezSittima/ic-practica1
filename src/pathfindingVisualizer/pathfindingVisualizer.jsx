@@ -45,11 +45,6 @@ export default function PathfindingVisualizer() {
     setHeight(window.innerHeight);
   };
 
-  const updateSpeed = (path, maze) => {
-    setSpeed(path);
-    setMazeSpeed(maze);
-  };
-
   const updateNodeType = (type) => {
     setNodeType(type);
   }
@@ -107,16 +102,7 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-    for (let row = 0; row < grid.length; row++) {
-      for (let col = 0; col < grid[0].length; col++) {
-        if (
-          document.getElementById(`node-${row}-${col}`).className ===
-          "node node-shortest-path"
-        ) {
-          document.getElementById(`node-${row}-${col}`).className = "node";
-        }
-      }
-    }
+
     const newGrid = getGridWithoutPath(grid);
 
     setGrid(newGrid);
@@ -148,7 +134,8 @@ export default function PathfindingVisualizer() {
         return;
       }
       let node = nodesInShortestPathOrder[i];
-      document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
+      node.isShortest = true;
+
       // setTimeout(() => {
       //   //shortest path node
       //   document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
@@ -183,7 +170,7 @@ export default function PathfindingVisualizer() {
         // }, i * speed);
         return;
       }
-      document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
+      node.isVisited = true;
       // setTimeout(() => {
       //   //visited node
       //   document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -283,7 +270,6 @@ export default function PathfindingVisualizer() {
               generateMaze={generateMaze}
               clearGrid={clearGrid}
               clearPath={clearPath}
-              updateSpeed={updateSpeed}
               updateNodeType = {updateNodeType}
       />
       <div
