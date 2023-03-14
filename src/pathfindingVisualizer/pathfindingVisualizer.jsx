@@ -5,9 +5,8 @@ import NavBar from "./navbar";
 
 import {
   astar,
-  astarWayPoint,
   getNodesInShortestPathOrderAstar,
-} from "../pathfindingAlgorithms/astar";
+} from "../astar";
 import factoryMaze from "../mazeAlgorithms/factoryMaze";
 
 const initialNum = getInitialNum(window.innerWidth, window.innerHeight);
@@ -137,14 +136,21 @@ export default function PathfindingVisualizer() {
         setGrid(newGrid);
         setVisualizingAlgorithm(false);
         // setTimeout(() => {
+        //   let newGrid = updateNodesForRender(
+        //     grid,
+        //     nodesInShortestPathOrder,
+        //     visitedNodesInOrder
+        //   );
+        //   setGrid(newGrid);
+        //   setVisualizingAlgorithm(false);
         // }, i * (3 * speed));
         return;
       }
       let node = nodesInShortestPathOrder[i];
-      //shortest path node
-      document.getElementById(`node-${node.row}-${node.col}`).className =
-        "node node-shortest-path";
+      document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
       // setTimeout(() => {
+      //   //shortest path node
+      //   document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
       // }, i * (3 * speed));
     }
   };
@@ -169,13 +175,18 @@ export default function PathfindingVisualizer() {
           visitedNodesInOrder
         );
         // setTimeout(() => {
+        //   animateShortestPath(
+        //     nodesInShortestPathOrder,
+        //     visitedNodesInOrder
+        //   );
         // }, i * speed);
         return;
       }
-      //visited node
-      document.getElementById(`node-${node.row}-${node.col}`).className =
-        "node node-visited";
+      document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
       // setTimeout(() => {
+      //   //visited node
+      //   document.getElementById(`node-${node.row}-${node.col}`).className =
+      //     "node node-visited";
       // }, i * speed);
     }
   };
@@ -184,36 +195,61 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-
     setVisualizingAlgorithm(true)
-    setTimeout(() => {
-      const startNode = grid[startNodeRow][startNodeCol];
-      const finishNode = grid[finishNodeRow][finishNodeCol];
-      const visitedNodesInOrder = astarWayPoint(grid, startNode, finishNode, waypointList);
+
+    let currentStartNode = grid[startNodeRow][startNodeCol];
+    const finishNode = grid[finishNodeRow][finishNodeCol];
+    const finalWaypointList = [...waypointList, finishNode];
+
+    finalWaypointList.forEach(waypoint => {
+      const tempGrid = grid.map(row => row.reduce((result, node) => [...result, JSON.parse(JSON.stringify(node))], []))
+      const tempWaypoint = tempGrid[waypoint.row][waypoint.col];
+      const tempCurrentNode = tempGrid[currentStartNode.row][currentStartNode.col];
+      tempCurrentNode.isVisited = true;
+
+      const visitedNodesInOrder = astar(tempGrid, tempCurrentNode, tempWaypoint);
       const nodesInShortestPathOrder = getNodesInShortestPathOrderAstar(
-        finishNode
+        tempWaypoint
       );
+
       animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
-    }, speed);
+
+      currentStartNode = waypoint;
+    });
+
+    // setTimeout(() => {
+    //   const startNode = grid[startNodeRow][startNodeCol];
+    //   const finishNode = grid[finishNodeRow][finishNodeCol];
+    //   const visitedNodesInOrder = astar(grid, startNode, finishNode);
+    //   const nodesInShortestPathOrder = getNodesInShortestPathOrderAstar(
+    //     finishNode
+    //   );
+    //   animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+    // }, speed);
   }
 
   const animateMaze = (walls) => {
     for (let i = 0; i <= walls.length; i++) {
       if (i === walls.length) {
-        setTimeout(() => {
-          let newGrid = getNewGridWithMaze(getInitialGrid(numRows,numColumns), walls);
-          setGrid(newGrid);
-          setGeneratingMaze(false);
-        }, i * mazeSpeed);
+        let newGrid = getNewGridWithMaze(getInitialGrid(numRows, numColumns), walls);
+        setGrid(newGrid);
+        setGeneratingMaze(false);
+        // setTimeout(() => {
+        //   let newGrid = getNewGridWithMaze(getInitialGrid(numRows, numColumns), walls);
+        //   setGrid(newGrid);
+        //   setGeneratingMaze(false);
+        // }, i * mazeSpeed);
         return;
       }
       let wall = walls[i];
       let node = grid[wall[0]][wall[1]];
-      setTimeout(() => {
-        //Walls
-        document.getElementById(`node-${node.row}-${node.col}`).className =
+      document.getElementById(`node-${node.row}-${node.col}`).className =
           "node node-wall-animated";
-      }, i * mazeSpeed);
+      // setTimeout(() => {
+      //   //Walls
+      //   document.getElementById(`node-${node.row}-${node.col}`).className =
+      //     "node node-wall-animated";
+      // }, i * mazeSpeed);
     }
   };
 
@@ -246,7 +282,6 @@ export default function PathfindingVisualizer() {
       <div
         className={`grid ${visualizingAlgorithm || generatingMaze ? "pe-none":"pe-auto"} `}
       >
-
         {grid.map((row, rowId) => {
           return (
             <div key={rowId}>
@@ -380,7 +415,7 @@ const getInitialGrid = (numRows, numColumns) => {
   }
   return grid;
 };
-// Los nodos del array grid son creados por esto
+
 const createNode = (row, col) => {
   return {
     row,
@@ -392,7 +427,6 @@ const createNode = (row, col) => {
     isVisited: false,
     isShortest: false,
     isWall: false,
-    isWaypoint:false,
     previousNode: null,
   };
 };
@@ -425,8 +459,6 @@ const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
     newWaypointList = [...newWaypointList, newNode];
   else
     newWaypointList = newWaypointList.filter(node => node.row !== row && node.col !== col);
-
-  console.log(waypointList);
 
   return { newGrid, newWaypointList };
 };

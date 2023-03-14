@@ -1,8 +1,7 @@
-function astar(grid, startNode, finishNode) {
+export function astar(grid, startNode, finishNode) {
   if (!startNode || !finishNode || startNode === finishNode) {
     return false;
   }
-
   let unvisitedNodes = []; //open list
   let visitedNodesInOrder = []; //closed list
   startNode.distance = 0;
@@ -23,7 +22,8 @@ function astar(grid, startNode, finishNode) {
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)) {
         unvisitedNodes.unshift(neighbour);
         neighbour.distance = distance;
-        neighbour.totalDistance = distance + manhattanDistance(neighbour, finishNode);
+        neighbour.totalDistance =
+          distance + manhattanDistance(neighbour, finishNode);
         neighbour.previousNode = closestNode;
       } else if (distance < neighbour.distance) {
         neighbour.distance = distance;
@@ -34,38 +34,6 @@ function astar(grid, startNode, finishNode) {
     }
   }
   return visitedNodesInOrder;
-}
-export function astarWayPoint(grid, startNode, finishNode, waypointList){
-  let result = [];
-  let tempStartNode = startNode;
-  for(let waypoint of waypointList){
-    let path = astar(resetIsVisited(grid), tempStartNode, waypoint);
-    tempStartNode = waypoint;
-    result = [...result, ...path];
-  }
-  result = [...result,...astar(resetIsVisited(grid), tempStartNode, finishNode)];
-  return result;
-}
-function resetIsVisited(grid){
-  let newGrid = grid.slice();
-  for (let row of grid) {
-    for (let node of row) {
-      if(node.isWaypoint || node.isFinish || node.isWall)
-        continue;
-
-      let newNode = {
-        ...node,
-        distance: Infinity,
-        totalDistance: Infinity,
-        isVisited: false,
-        isShortest: false,
-        previousNode: null,
-      };
-
-      newGrid[node.row][node.col] = newNode;
-    }
-  }
-  return newGrid;
 }
 //  TODO Cambiar a un bucle or
 function getNeighbours(node, grid) {
