@@ -28,8 +28,6 @@ export default function PathfindingVisualizer() {
   const [height, setHeight] = useState(window.innerHeight);
   const [numRows, setNumRows] = useState(initialNumRows);
   const [numColumns, setNumColumns] = useState(initialNumColumns);
-  const [speed, setSpeed] = useState(10);
-  const [mazeSpeed, setMazeSpeed] = useState(10);
   const [nodeType, setNodeType] = useState("Wall");
   const [waypointList, setWaypointList] = useState([]);
 
