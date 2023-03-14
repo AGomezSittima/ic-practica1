@@ -99,16 +99,7 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-    for (let row = 0; row < grid.length; row++) {
-      for (let col = 0; col < grid[0].length; col++) {
-        if (
-          document.getElementById(`node-${row}-${col}`).className ===
-          "node node-shortest-path"
-        ) {
-          document.getElementById(`node-${row}-${col}`).className = "node";
-        }
-      }
-    }
+    
     const newGrid = getGridWithoutPath(grid);
 
     setGrid(newGrid);
