@@ -21,7 +21,7 @@ export function astar(grid, startNode, finishNode) {
       //f(n) = g(n) + h(n)
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)) {
         unvisitedNodes.unshift(neighbour);
-        neighbour.distance = distance;
+        neighbour.distance = distance + (neighbour.isRisky ? 200000 : 0);
         neighbour.totalDistance =
           distance + manhattanDistance(neighbour, finishNode);
         neighbour.previousNode = closestNode;
@@ -74,6 +74,7 @@ function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
 function manhattanDistance(node, finishNode) {
   let x = Math.abs(node.row - finishNode.row);
   let y = Math.abs(node.col - finishNode.col);
+
   return x + y;
 }
 

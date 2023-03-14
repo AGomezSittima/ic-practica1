@@ -34,7 +34,6 @@ export default function PathfindingVisualizer() {
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
     const grid = getInitialGrid(numRows, numColumns);
-    if(nodeType)
     setGrid(grid);
   }, [])
 
@@ -181,6 +180,9 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
+
+    let exitAlgorithm = false;
+
     setVisualizingAlgorithm(true)
 
     let currentStartNode = grid[startNodeRow][startNodeCol];
@@ -188,6 +190,9 @@ export default function PathfindingVisualizer() {
     const finalWaypointList = [...waypointList, finishNode];
 
     finalWaypointList.forEach(waypoint => {
+      if(exitAlgorithm)
+        return;
+
       const tempGrid = grid.map(row => row.reduce((result, node) => [...result, JSON.parse(JSON.stringify(node))], []))
       const tempWaypoint = tempGrid[waypoint.row][waypoint.col];
       const tempCurrentNode = tempGrid[currentStartNode.row][currentStartNode.col];
@@ -198,10 +203,22 @@ export default function PathfindingVisualizer() {
         tempWaypoint
       );
 
+      if(!visitedNodesInOrder.find(node => node.row === waypoint.row && node.col === waypoint.col))
+      {
+        alert("No se ha encontrado un camino a alguno de los waypoints o a la meta");
+        exitAlgorithm = true;
+        return;
+      }
+
       animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
 
       currentStartNode = waypoint;
     });
+
+    if(exitAlgorithm)
+      {
+        setVisualizingAlgorithm(false);
+      }
 
     // setTimeout(() => {
     //   const startNode = grid[startNodeRow][startNodeCol];
@@ -285,7 +302,8 @@ export default function PathfindingVisualizer() {
                   isVisited,
                   isShortest,
                   isWall,
-                  isWaypoint
+                  isWaypoint,
+                  isRisky
                 } = node;
                 return (
                   <Node
@@ -298,6 +316,7 @@ export default function PathfindingVisualizer() {
                     isShortest={isShortest}
                     isWall={isWall}
                     isWaypoint={isWaypoint}
+                    isRisky={isRisky}
                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                     onMouseEnter={(row, col) =>
                       handleMouseEnter(row, col)
@@ -418,6 +437,7 @@ const createNode = (row, col) => {
     isVisited: false,
     isShortest: false,
     isWall: false,
+    isRisky: false,
     previousNode: null,
   };
 };
@@ -429,7 +449,8 @@ const getNewGridWithWalls = (grid, waypointList, row, col) => {
   let newNode = {
     ...node,
     isWall: !node.isWall,
-    isWaypoint: false
+    isWaypoint: false,
+    isRisky: false
   };
   newGrid[row][col] = newNode;
   return { newGrid, newWaypointList };
@@ -442,7 +463,8 @@ const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
   let newNode = {
     ...node,
     isWall: false,
-    isWaypoint: !node.isWaypoint
+    isWaypoint: !node.isWaypoint,
+    isRisky: false
   };
   newGrid[row][col] = newNode;
 
