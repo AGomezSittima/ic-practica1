@@ -10,10 +10,10 @@ export function astar(grid, startNode, finishNode) {
   while (unvisitedNodes.length !== 0) {
     unvisitedNodes.sort((a, b) => a.totalDistance - b.totalDistance);
     let closestNode = unvisitedNodes.shift();
-    if (closestNode === finishNode) return visitedNodesInOrder;
-
     closestNode.isVisited = true;
     visitedNodesInOrder.push(closestNode);
+
+    if (closestNode === finishNode) return visitedNodesInOrder;
 
     let neighbours = getNeighbours(closestNode, grid);
     for (let neighbour of neighbours) {
@@ -21,9 +21,9 @@ export function astar(grid, startNode, finishNode) {
       //f(n) = g(n) + h(n)
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)) {
         unvisitedNodes.unshift(neighbour);
-        neighbour.distance = distance + (neighbour.isRisky ? 200000 : 0);
+        neighbour.distance = distance;
         neighbour.totalDistance =
-          distance + manhattanDistance(neighbour, finishNode);
+          distance + manhattanDistance(neighbour, finishNode) + neighbour.isRisky * Math.random(2, 10);
         neighbour.previousNode = closestNode;
       } else if (distance < neighbour.distance) {
         neighbour.distance = distance;

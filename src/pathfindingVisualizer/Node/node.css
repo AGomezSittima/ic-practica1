@@ -42,8 +42,8 @@
 .node-risky {
   width: var(--width);
   height: var(--height);
-  background-color: rgb(255, 81, 46);
-  border: 1px solid rgb(255, 81, 46);
+  background-color: rgb(91, 46, 255);
+  border: 1px solid rgb(91, 46, 255);
   display: inline-block;
 }
 
