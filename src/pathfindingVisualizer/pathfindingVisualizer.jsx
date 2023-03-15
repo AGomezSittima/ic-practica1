@@ -357,21 +357,21 @@ function getInitialNum(width, height) {
 
 }
 
-function getRandomNums(num) {
-  let randomNums1 = [];
-  let temp = 2;
-  for (let i = 5; i < num / 2; i += 2) {
-    randomNums1.push(temp);
-    temp += 2;
-  }
-  let randomNums2 = [];
-  temp = -2;
-  for (let i = num / 2; i < num - 5; i += 2) {
-    randomNums2.push(temp);
-    temp -= 2;
-  }
-  return [randomNums1, randomNums2];
-}
+// function getRandomNums(num) {
+//   let randomNums1 = [];
+//   let temp = 2;
+//   for (let i = 5; i < num / 2; i += 2) {
+//     randomNums1.push(temp);
+//     temp += 2;
+//   }
+//   let randomNums2 = [];
+//   temp = -2;
+//   for (let i = num / 2; i < num - 5; i += 2) {
+//     randomNums2.push(temp);
+//     temp -= 2;
+//   }
+//   return [randomNums1, randomNums2];
+// }
 
 // function getStartFinishNode(numRows, numColumns) {
 //   let randomNums;
