@@ -7,6 +7,8 @@ export default function NavBar(props){
   const [pathState, setPathState] = useState(false);
   const [mazeState, setMazeState] = useState(false);
   const [typeState, setTypeState] = useState("Wall");
+  const [typeNode, setTypeNode] = useState("Start");
+
 
 
   const selectMaze = (selection) =>{
@@ -96,6 +98,17 @@ export default function NavBar(props){
 
     props.updateNodeType(type);
   }
+  const changeNodeTypeSF = (type) => {
+    if (props.visualizingAlgorithm || props.generatingMaze)
+      return;
+
+    setTypeNode(type);
+
+    props.updateNodeSF(type);
+  }
+
+
+
 
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -163,6 +176,36 @@ export default function NavBar(props){
             >
               {maze}
             </button>
+          </li>
+          <li className="nav-item dropdown">
+            <div className="dropdown">
+              <button
+                className="btn btn-warning dropdown-toggle"
+                type="button"
+                id="dropdownMenu1"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {typeNode}
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeTypeSF("Start")}
+                >
+                  Start
+                </button>
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeTypeSF("Finish")}
+                >
+                  Finish
+                </button>
+              </div>
+            </div>
           </li>
 
           <li className="nav-item dropdown">

@@ -13,11 +13,9 @@ const initialNum = getInitialNum(window.innerWidth, window.innerHeight);
 const initialNumRows = initialNum[0];
 const initialNumColumns = initialNum[1];
 
-const startFinishNode = getStartFinishNode(initialNumRows, initialNumColumns);
-const startNodeRow = startFinishNode[0];
-const startNodeCol = startFinishNode[1];
-const finishNodeRow = startFinishNode[2];
-const finishNodeCol = startFinishNode[3];
+// const startFinishNode = getStartFinishNode(initialNumRows, initialNumColumns);
+let startNode;
+let finishNode;
 
 
 
@@ -30,13 +28,14 @@ export default function PathfindingVisualizer() {
   const [height, setHeight] = useState(window.innerHeight);
   const [numRows, setNumRows] = useState(initialNumRows);
   const [numColumns, setNumColumns] = useState(initialNumColumns);
-  const [isSettingWalls, setIsSettingWalls] = useState(true);
+  const [isSettingWalls, setIsSettingWalls] = useState("Wall");
+
   const [waypointList, setWaypointList] = useState([]);
 
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
     const grid = getInitialGrid(numRows, numColumns);
-    if(isSettingWalls)
+    if(isSettingWalls === "Wall")
     setGrid(grid);
   }, [])
 
@@ -46,11 +45,15 @@ export default function PathfindingVisualizer() {
   };
 
   const updateNodeType = (type) => {
-    setIsSettingWalls(type === "Wall");
+    setIsSettingWalls(type);
   }
 
+  const updateNodeSF = (type) => {
+    setIsSettingWalls(type);
+  }
   const handleMouseDown = (row, col) => {
-    const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
+    const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, isSettingWalls);
+    
 
     setGrid(newGrid);
     setWaypointList(newWaypointList);
@@ -59,7 +62,7 @@ export default function PathfindingVisualizer() {
 
   const handleMouseEnter = (row, col) => {
     if (mouseIsPressed) {
-      const {newGrid, newWaypointList } = isSettingWalls ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
+      const {newGrid, newWaypointList } = isSettingWalls === 'Wall' ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
 
       setGrid(newGrid);
       setWaypointList(newWaypointList);
@@ -78,11 +81,9 @@ export default function PathfindingVisualizer() {
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[0].length; col++) {
         if (
-          !(
-            (row === startNodeRow && col === startNodeCol) ||
-            (row === finishNodeRow && col === finishNodeCol)
-          )
-        ) {
+          !(startNode||!finishNode) &&
+          !( (row === startNode.row && col === startNode.col) || (row === finishNode.row && col === finishNode.col)) 
+          ) {
           document.getElementById(`node-${row}-${col}`).className = "node";
         }
       }
@@ -177,13 +178,12 @@ export default function PathfindingVisualizer() {
   };
 
   const visualizeAStar = () => {
-    if (visualizingAlgorithm || generatingMaze) {
+    if (visualizingAlgorithm || generatingMaze || !startNode || !finishNode) {
       return;
     }
     setVisualizingAlgorithm(true)
 
-    let currentStartNode = grid[startNodeRow][startNodeCol];
-    const finishNode = grid[finishNodeRow][finishNodeCol];
+    let currentStartNode = startNode;
     const finalWaypointList = [...waypointList, finishNode];
 
     finalWaypointList.forEach(waypoint => {
@@ -243,8 +243,8 @@ export default function PathfindingVisualizer() {
       return;
     }
     setGeneratingMaze(true);
-    const startNode = grid[startNodeRow][startNodeCol];
-    const finishNode = grid[finishNodeRow][finishNodeCol];
+    // const startNode = grid[startNodeRow][startNodeCol];
+    // const finishNode = grid[finishNodeRow][finishNodeCol];
     const walls = factoryMaze(maze)(grid, startNode, finishNode);
     animateMaze(walls);
     // setTimeout(() => {
@@ -262,6 +262,7 @@ export default function PathfindingVisualizer() {
               clearGrid={clearGrid}
               clearPath={clearPath}
               updateNodeType = {updateNodeType}
+              updateNodeSF = {updateNodeSF}
       />
       <div
         className={`grid ${visualizingAlgorithm || generatingMaze ? "pe-none":"pe-auto"} `}
@@ -351,42 +352,42 @@ function getRandomNums(num) {
   return [randomNums1, randomNums2];
 }
 
-function getStartFinishNode(numRows, numColumns) {
-  let randomNums;
-  let x;
-  let y;
-  let startNodeRow;
-  let startNodeCol;
-  let finishNodeRow;
-  let finishNodeCol;
-  if (numRows < numColumns) {
-    randomNums = getRandomNums(numRows);
-    x = Math.floor(numRows / 2);
-    y = Math.floor(numColumns / 4);
-    if (x % 2 !== 0) x -= 1;
-    if (y % 2 !== 0) y += 1;
-    startNodeRow =
-      x + randomNums[1][Math.floor(Math.random() * randomNums[1].length)];
-    startNodeCol = y + [-6, -4, -2, 0][Math.floor(Math.random() * 4)];
-    finishNodeRow =
-      x + randomNums[0][Math.floor(Math.random() * randomNums[0].length)];
-    finishNodeCol =
-      numColumns - y + [0, 2, 4, 6][Math.floor(Math.random() * 4)];
-  } else {
-    randomNums = getRandomNums(numColumns);
-    x = Math.floor(numRows / 4);
-    y = Math.floor(numColumns / 2);
-    if (x % 2 !== 0) x -= 1;
-    if (y % 2 !== 0) y += 1;
-    startNodeRow = x + [-6, -4, -2, 0][Math.floor(Math.random() * 4)];
-    startNodeCol =
-      y + randomNums[1][Math.floor(Math.random() * randomNums[1].length)];
-    finishNodeRow = numRows - x + [0, 2, 4, 6][Math.floor(Math.random() * 4)];
-    finishNodeCol =
-      y + randomNums[0][Math.floor(Math.random() * randomNums[0].length)];
-  }
-  return [startNodeRow, startNodeCol, finishNodeRow, finishNodeCol];
-}
+// function getStartFinishNode(numRows, numColumns) {
+//   let randomNums;
+//   let x;
+//   let y;
+//   let startNodeRow;
+//   let startNodeCol;
+//   let finishNodeRow;
+//   let finishNodeCol;
+//   if (numRows < numColumns) {
+//     randomNums = getRandomNums(numRows);
+//     x = Math.floor(numRows / 2);
+//     y = Math.floor(numColumns / 4);
+//     if (x % 2 !== 0) x -= 1;
+//     if (y % 2 !== 0) y += 1;
+//     startNodeRow =
+//       x + randomNums[1][Math.floor(Math.random() * randomNums[1].length)];
+//     startNodeCol = y + [-6, -4, -2, 0][Math.floor(Math.random() * 4)];
+//     finishNodeRow =
+//       x + randomNums[0][Math.floor(Math.random() * randomNums[0].length)];
+//     finishNodeCol =
+//       numColumns - y + [0, 2, 4, 6][Math.floor(Math.random() * 4)];
+//   } else {
+//     randomNums = getRandomNums(numColumns);
+//     x = Math.floor(numRows / 4);
+//     y = Math.floor(numColumns / 2);
+//     if (x % 2 !== 0) x -= 1;
+//     if (y % 2 !== 0) y += 1;
+//     startNodeRow = x + [-6, -4, -2, 0][Math.floor(Math.random() * 4)];
+//     startNodeCol =
+//       y + randomNums[1][Math.floor(Math.random() * randomNums[1].length)];
+//     finishNodeRow = numRows - x + [0, 2, 4, 6][Math.floor(Math.random() * 4)];
+//     finishNodeCol =
+//       y + randomNums[0][Math.floor(Math.random() * randomNums[0].length)];
+//   }
+//   return [startNodeRow, startNodeCol, finishNodeRow, finishNodeCol];
+// }
 
 const getInitialGrid = (numRows, numColumns) => {
   let grid = [];
@@ -404,8 +405,8 @@ const createNode = (row, col) => {
   return {
     row,
     col,
-    isStart: row === startNodeRow && col === startNodeCol,
-    isFinish: row === finishNodeRow && col === finishNodeCol,
+    isStart: false,
+    isFinish: false,
     distance: Infinity,
     totalDistance: Infinity,
     isVisited: false,
@@ -414,7 +415,21 @@ const createNode = (row, col) => {
     previousNode: null,
   };
 };
+const getNewGridWithNewNode = (grid, waypointList, row, col, type) => {
+  switch (type) {
+    case 'Wall':
+      return getNewGridWithWalls(grid, waypointList, row, col);
+    case 'Waypoint':
+     return getNewGridWithWaypoint(grid, waypointList, row, col);
+    case 'Start':
+     return getNewGridWithStart(grid, waypointList, row, col);
+    case 'Finish':
+      return getNewGridWithFinish(grid, waypointList, row, col);
+    default:
+      break;
+  }
 
+}
 const getNewGridWithWalls = (grid, waypointList, row, col) => {
   let newWaypointList = waypointList;
   let newGrid = grid.slice();
@@ -446,6 +461,52 @@ const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
 
   return { newGrid, newWaypointList };
 };
+
+const getNewGridWithStart = (grid, waypointList, row, col) => {
+  let newWaypointList = waypointList;
+  let newGrid = grid.slice();
+  if(startNode)
+    newGrid[startNode.row][startNode.col].isStart = false;
+  startNode = {
+    row,
+    col,
+    isStart: true,
+    isFinish: false,
+    distance: Infinity,
+    totalDistance: Infinity,
+    isVisited: false,
+    isShortest: false,
+    isWall: false,
+    previousNode: null,
+  };
+  newGrid[row][col] = startNode;
+
+  return { newGrid, newWaypointList };
+};
+
+const getNewGridWithFinish = (grid, waypointList, row, col) => {
+  let newWaypointList = waypointList;
+  let newGrid = grid.slice();
+  if(finishNode)
+    newGrid[finishNode.row][finishNode.col].isStart = false;
+  finishNode = {
+    row,
+    col,
+    isStart: false,
+    isFinish: true,
+    distance: Infinity,
+    totalDistance: Infinity,
+    isVisited: false,
+    isShortest: false,
+    isWall: false,
+    previousNode: null,
+  };
+  newGrid[row][col] = finishNode;
+
+
+  return { newGrid, newWaypointList };
+};
+
 
 const getNewGridWithMaze = (grid, walls) => {
   let newGrid = grid.slice();
@@ -481,13 +542,17 @@ const getGridWithoutPath = (grid) => {
 const updateNodesForRender = (
   grid,
   nodesInShortestPathOrder,
-  visitedNodesInOrder
+  visitedNodesInOrder, 
+  startNode,
+  finishNode,
 ) => {
   let newGrid = grid.slice();
   for (let node of visitedNodesInOrder) {
-    if (
-      (node.row === startNodeRow && node.col === startNodeCol) ||
-      (node.row === finishNodeRow && node.col === finishNodeCol)
+    if (   
+      (startNode && finishNode) &&(
+      (node.row === startNode.row && node.col === startNode.col) ||
+      (node.row === finishNode.row && node.col === finishNode.col)
+      )
     )
       continue;
     let newNode = {
@@ -497,7 +562,7 @@ const updateNodesForRender = (
     newGrid[node.row][node.col] = newNode;
   }
   for (let node of nodesInShortestPathOrder) {
-    if (node.row === finishNodeRow && node.col === finishNodeCol) {
+    if (!(startNode && finishNode)  || (node.row === finishNode.row && node.col === finishNode.col)) {
       return newGrid;
     }
     let newNode = {
