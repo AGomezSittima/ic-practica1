@@ -39,15 +39,12 @@
   display: inline-block;
 }
 
-.node-wall-animated {
+.node-risky {
   width: var(--width);
   height: var(--height);
+  background-color: rgb(91, 46, 255);
+  border: 1px solid rgb(91, 46, 255);
   display: inline-block;
-  animation-name: wallAnimation;
-  animation-duration: 0.5s;
-  animation-timing-function: ease-out;
-  animation-direction: alternate;
-  animation-fill-mode: forwards;
 }
 
 .node-visited {

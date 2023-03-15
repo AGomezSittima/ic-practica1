@@ -17,8 +17,6 @@ const initialNumColumns = initialNum[1];
 let startNode;
 let finishNode;
 
-
-
 export default function PathfindingVisualizer() {
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
@@ -28,14 +26,12 @@ export default function PathfindingVisualizer() {
   const [height, setHeight] = useState(window.innerHeight);
   const [numRows, setNumRows] = useState(initialNumRows);
   const [numColumns, setNumColumns] = useState(initialNumColumns);
-  const [isSettingWalls, setIsSettingWalls] = useState("Wall");
-
+  const [nodeType, setNodeType] = useState("Wall");
   const [waypointList, setWaypointList] = useState([]);
 
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
     const grid = getInitialGrid(numRows, numColumns);
-    if(isSettingWalls === "Wall")
     setGrid(grid);
   }, [])
 
@@ -45,14 +41,14 @@ export default function PathfindingVisualizer() {
   };
 
   const updateNodeType = (type) => {
-    setIsSettingWalls(type);
+    setNodeType(type);
   }
 
   const updateNodeSF = (type) => {
-    setIsSettingWalls(type);
+    setNodeType(type);
   }
   const handleMouseDown = (row, col) => {
-    const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, isSettingWalls);
+    const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType);
     
 
     setGrid(newGrid);
@@ -62,7 +58,7 @@ export default function PathfindingVisualizer() {
 
   const handleMouseEnter = (row, col) => {
     if (mouseIsPressed) {
-      const {newGrid, newWaypointList } = isSettingWalls === 'Wall' ? getNewGridWithWalls(grid, waypointList, row, col) : getNewGridWithWaypoint(grid, waypointList, row, col);
+      const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType);
 
       setGrid(newGrid);
       setWaypointList(newWaypointList);
@@ -100,7 +96,7 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-    
+
     const newGrid = getGridWithoutPath(grid);
 
     setGrid(newGrid);
@@ -133,7 +129,7 @@ export default function PathfindingVisualizer() {
       }
       let node = nodesInShortestPathOrder[i];
       node.isShortest = true;
-    
+
       // setTimeout(() => {
       //   //shortest path node
       //   document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
@@ -181,12 +177,18 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze || !startNode || !finishNode) {
       return;
     }
+
+    let exitAlgorithm = false;
+
     setVisualizingAlgorithm(true)
 
     let currentStartNode = startNode;
     const finalWaypointList = [...waypointList, finishNode];
 
     finalWaypointList.forEach(waypoint => {
+      if(exitAlgorithm)
+        return;
+
       const tempGrid = grid.map(row => row.reduce((result, node) => [...result, JSON.parse(JSON.stringify(node))], []))
       const tempWaypoint = tempGrid[waypoint.row][waypoint.col];
       const tempCurrentNode = tempGrid[currentStartNode.row][currentStartNode.col];
@@ -197,10 +199,22 @@ export default function PathfindingVisualizer() {
         tempWaypoint
       );
 
+      if(!visitedNodesInOrder.find(node => node.row === waypoint.row && node.col === waypoint.col))
+      {
+        alert("No se ha encontrado un camino a alguno de los waypoints o a la meta");
+        exitAlgorithm = true;
+        return;
+      }
+
       animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
 
       currentStartNode = waypoint;
     });
+
+    if(exitAlgorithm)
+      {
+        setVisualizingAlgorithm(false);
+      }
 
     // setTimeout(() => {
     //   const startNode = grid[startNodeRow][startNodeCol];
@@ -229,7 +243,7 @@ export default function PathfindingVisualizer() {
       let wall = walls[i];
       let node = grid[wall[0]][wall[1]];
       document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-wall-animated";
+          "node node-wall";
       // setTimeout(() => {
       //   //Walls
       //   document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -247,7 +261,12 @@ export default function PathfindingVisualizer() {
     // const finishNode = grid[finishNodeRow][finishNodeCol];
     const walls = factoryMaze(maze)(grid, startNode, finishNode);
     animateMaze(walls);
+
     // setTimeout(() => {
+    //   const startNode = grid[startNodeRow][startNodeCol];
+    //   const finishNode = grid[finishNodeRow][finishNodeCol];
+    //   const walls = factoryMaze(maze)(grid, startNode, finishNode);
+    //   animateMaze(walls);
     // }, mazeSpeed);
   }
 
@@ -279,7 +298,8 @@ export default function PathfindingVisualizer() {
                   isVisited,
                   isShortest,
                   isWall,
-                  isWaypoint
+                  isWaypoint,
+                  isRisky
                 } = node;
                 return (
                   <Node
@@ -292,6 +312,7 @@ export default function PathfindingVisualizer() {
                     isShortest={isShortest}
                     isWall={isWall}
                     isWaypoint={isWaypoint}
+                    isRisky={isRisky}
                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                     onMouseEnter={(row, col) =>
                       handleMouseEnter(row, col)
@@ -412,6 +433,7 @@ const createNode = (row, col) => {
     isVisited: false,
     isShortest: false,
     isWall: false,
+    isRisky: false,
     previousNode: null,
   };
 };
@@ -425,6 +447,8 @@ const getNewGridWithNewNode = (grid, waypointList, row, col, type) => {
      return getNewGridWithStart(grid, waypointList, row, col);
     case 'Finish':
       return getNewGridWithFinish(grid, waypointList, row, col);
+    case 'Risky':
+      return getNewGridWithRisky(grid, waypointList, row, col);
     default:
       break;
   }
@@ -437,7 +461,8 @@ const getNewGridWithWalls = (grid, waypointList, row, col) => {
   let newNode = {
     ...node,
     isWall: !node.isWall,
-    isWaypoint: false
+    isWaypoint: false,
+    isRisky: false
   };
   newGrid[row][col] = newNode;
   return { newGrid, newWaypointList };
@@ -450,7 +475,8 @@ const getNewGridWithWaypoint = (grid, waypointList, row, col) => {
   let newNode = {
     ...node,
     isWall: false,
-    isWaypoint: !node.isWaypoint
+    isWaypoint: !node.isWaypoint,
+    isRisky: false
   };
   newGrid[row][col] = newNode;
 
@@ -488,7 +514,7 @@ const getNewGridWithFinish = (grid, waypointList, row, col) => {
   let newWaypointList = waypointList;
   let newGrid = grid.slice();
   if(finishNode)
-    newGrid[finishNode.row][finishNode.col].isStart = false;
+    newGrid[finishNode.row][finishNode.col].isFinish = false;
   finishNode = {
     row,
     col,
@@ -507,6 +533,20 @@ const getNewGridWithFinish = (grid, waypointList, row, col) => {
   return { newGrid, newWaypointList };
 };
 
+
+const getNewGridWithRisky = (grid, waypointList, row, col) => {
+  let newWaypointList = waypointList;
+  let newGrid = grid.slice();
+  let node = grid[row][col];
+  let newNode = {
+    ...node,
+    isWall: false,
+    isWaypoint: false,
+    isRisky: !node.isRisky
+  };
+  newGrid[row][col] = newNode;
+  return { newGrid, newWaypointList };
+};
 
 const getNewGridWithMaze = (grid, walls) => {
   let newGrid = grid.slice();

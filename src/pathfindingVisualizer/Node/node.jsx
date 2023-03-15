@@ -1,6 +1,5 @@
 import React from "react";
 import "./node.css";
-import { useState } from "react";
 
 export default function Node({
   row,
@@ -8,9 +7,10 @@ export default function Node({
   isStart,
   isFinish,
   isWall,
+  isWaypoint,
+  isRisky,
   isVisited,
   isShortest,
-  isWaypoint,
   onMouseEnter,
   onMouseDown,
   onMouseUp,
@@ -24,15 +24,17 @@ export default function Node({
       : isFinish
       ? "node node-finish"
       : isWall
-      ? "node-wall" 
+      ? "node-wall"
       : isWaypoint
       ? "node node-waypoint"
+      : isRisky
+      ? "node node-risky"
       : isShortest
       ? "node node-shortest-path"
       : isVisited
       ? "node node-visited"
       : "node";
-    
+
     let cellWidth = Math.floor((width - 15) / numColumns);
     let cellHeight;
     if (width > 1000) {

@@ -235,6 +235,13 @@ export default function NavBar(props){
                 >
                   Waypoint
                 </button>
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeType("Risky")}
+                >
+                  Risky
+                </button>
               </div>
             </div>
           </li>
