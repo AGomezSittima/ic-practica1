@@ -23,7 +23,7 @@ export function astar(grid, startNode, finishNode) {
         unvisitedNodes.unshift(neighbour);
         neighbour.distance = distance;
         neighbour.totalDistance =
-          distance + manhattanDistance(neighbour, finishNode) + neighbour.isRisky * Math.random(2, 10);
+          distance + manhattanDistance(neighbour, finishNode) + neighbour.isRisky * 5;
         neighbour.previousNode = closestNode;
       } else if (distance < neighbour.distance) {
         neighbour.distance = distance;

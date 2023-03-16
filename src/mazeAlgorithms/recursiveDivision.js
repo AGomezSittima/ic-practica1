@@ -1,8 +1,5 @@
 let walls;
 export function recursiveDivisionMaze(grid, startNode, finishNode) {
-  if (!startNode || !finishNode || startNode === finishNode) {
-    return false;
-  }
   let vertical = range(grid[0].length);
   let horizontal = range(grid.length);
   walls = [];
@@ -95,25 +92,25 @@ function addWall(dir, num, vertical, horizontal, startNode, finishNode) {
   if (dir === 0) {
     if (horizontal.length === 2) return;
     for (let temp of horizontal) {
-      if (
-        (temp === startNode.row && num === startNode.col) ||
-        (temp === finishNode.row && num === finishNode.col)
-      ) {
-        isStartFinish = true;
-        continue;
+      if ((startNode && (temp === startNode.row && num === startNode.col))
+        || (finishNode && (temp === finishNode.row && num === finishNode.col)))
+      {
+          isStartFinish = true;
+          continue;
       }
+
       tempWalls.push([temp, num]);
     }
   } else {
     if (vertical.length === 2) return;
     for (let temp of vertical) {
-      if (
-        (num === startNode.row && temp === startNode.col) ||
-        (num === finishNode.row && temp === finishNode.col)
-      ) {
-        isStartFinish = true;
-        continue;
+      if ((startNode && (num === startNode.row && temp === startNode.col))
+        || (finishNode && (num === finishNode.row && temp === finishNode.col)))
+      {
+          isStartFinish = true;
+          continue;
       }
+
       tempWalls.push([num, temp]);
     }
   }

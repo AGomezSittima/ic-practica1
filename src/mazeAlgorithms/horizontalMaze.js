@@ -1,8 +1,5 @@
 let walls;
 export function horizontalMaze(grid, startNode, finishNode) {
-  if (!startNode || !finishNode || startNode === finishNode) {
-    return false;
-  }
   let vertical = range(grid[0].length);
   let horizontal = range(grid.length);
   walls = [];
@@ -37,19 +34,22 @@ function getHorizontalWalls(vertical, horizontal, startNode, finishNode) {
 function addWall(num, vertical, startNode, finishNode) {
   let isStartFinish = false;
   let tempWalls = [];
+
   for (let temp of vertical) {
     if (
-      (num === startNode.row && temp === startNode.col) ||
-      (num === finishNode.row && temp === finishNode.col)
+      (startNode && (num === startNode.row && temp === startNode.col)) ||
+      (finishNode && (num === finishNode.row && temp === finishNode.col))
     ) {
       isStartFinish = true;
       continue;
     }
     tempWalls.push([num, temp]);
   }
+
   if (!isStartFinish) {
     tempWalls.splice(Math.floor(Math.random() * tempWalls.length), 1);
   }
+
   for (let wall of tempWalls) {
     walls.push(wall);
   }
