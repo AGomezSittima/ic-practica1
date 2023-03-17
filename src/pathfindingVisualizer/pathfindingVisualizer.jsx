@@ -30,15 +30,18 @@ export default function PathfindingVisualizer() {
   const [waypointList, setWaypointList] = useState([]);
 
   useEffect(() => {
-    window.addEventListener("resize", updateDimensions);
-    const grid = getInitialGrid(numRows, numColumns);
-    setGrid(grid);
-  }, [])
-
+    setGrid(getInitialGrid(numRows, numColumns));
+  }, [numRows, numColumns])
+  
   const updateDimensions = () => {
+    let [rows, cols] = getInitialNum(window.innerWidth, window.innerHeight);
+    setNumRows(rows);
+    setNumColumns(cols);
     setWidth(window.innerWidth);
     setHeight(window.innerHeight);
   };
+ 
+  window.addEventListener("resize", updateDimensions);
 
   const updateNodeType = (type) => {
     setNodeType(type);
