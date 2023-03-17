@@ -74,7 +74,6 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-
     for (let row = 0; row < grid.length; row++)
       for (let col = 0; col < grid[0].length; col++)
         document.getElementById(`node-${row}-${col}`).className = "node";
@@ -256,10 +255,10 @@ export default function PathfindingVisualizer() {
     setGeneratingMaze(true);
     // const startNode = grid[startNodeRow][startNodeCol];
     // const finishNode = grid[finishNodeRow][finishNodeCol];
+   
     const walls = factoryMaze(maze)(grid, startNode, finishNode);
-    console.log(walls);
-    animateMaze(walls);
 
+    animateMaze(walls);
     // setTimeout(() => {
     //   const startNode = grid[startNodeRow][startNodeCol];
     //   const finishNode = grid[finishNodeRow][finishNodeCol];
@@ -417,6 +416,10 @@ const getInitialGrid = (numRows, numColumns) => {
     }
     grid.push(currentRow);
   }
+  if(startNode)
+    grid[startNode.row][startNode.col] = startNode;
+  if(finishNode)
+    grid[finishNode.row][finishNode.col] = finishNode;
   return grid;
 };
 

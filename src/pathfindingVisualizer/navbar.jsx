@@ -177,37 +177,7 @@ export default function NavBar(props){
               {maze}
             </button>
           </li>
-          <li className="nav-item dropdown">
-            <div className="dropdown">
-              <button
-                className="btn btn-warning dropdown-toggle"
-                type="button"
-                id="dropdownMenu1"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {typeNode}
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <button
-                  className="dropdown-item btn-light"
-                  type="button"
-                  onClick={() => changeNodeTypeSF("Start")}
-                >
-                  Start
-                </button>
-                <button
-                  className="dropdown-item btn-light"
-                  type="button"
-                  onClick={() => changeNodeTypeSF("Finish")}
-                >
-                  Finish
-                </button>
-              </div>
-            </div>
-          </li>
-
+        
           <li className="nav-item dropdown">
             <div className="dropdown">
               <button
@@ -241,6 +211,20 @@ export default function NavBar(props){
                   onClick={() => changeNodeType("Risky")}
                 >
                   Risky
+                </button>
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeTypeSF("Start")}
+                >
+                  Start
+                </button>
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeTypeSF("Finish")}
+                >
+                  Finish
                 </button>
               </div>
             </div>
