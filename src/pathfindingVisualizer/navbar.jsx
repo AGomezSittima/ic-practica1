@@ -7,7 +7,6 @@ export default function NavBar(props){
   const [pathState, setPathState] = useState(false);
   const [mazeState, setMazeState] = useState(false);
   const [typeState, setTypeState] = useState("Wall");
-  const [typeNode, setTypeNode] = useState("Start");
 
 
 
@@ -28,9 +27,13 @@ export default function NavBar(props){
 
   const visualizeAlgorithm = () => {
 
-    if (props.visualizingAlgorithm || props.generatingMaze)
+    if (props.visualizingAlgorithm || props.generatingMaze )
       return;
-
+    if(props.isStartFinish()){
+      alert("Se requiere un nodo de inicio y de fin para ejecutar el algoritmo");
+      return;
+    }
+    
     if (pathState) {
       clearTemp();
       return;
@@ -98,17 +101,6 @@ export default function NavBar(props){
 
     props.updateNodeType(type);
   }
-  const changeNodeTypeSF = (type) => {
-    if (props.visualizingAlgorithm || props.generatingMaze)
-      return;
-
-    setTypeNode(type);
-
-    props.updateNodeSF(type);
-  }
-
-
-
 
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -215,17 +207,55 @@ export default function NavBar(props){
                 <button
                   className="dropdown-item btn-light"
                   type="button"
-                  onClick={() => changeNodeTypeSF("Start")}
+                  onClick={() => changeNodeType("Start")}
                 >
                   Start
                 </button>
                 <button
                   className="dropdown-item btn-light"
                   type="button"
-                  onClick={() => changeNodeTypeSF("Finish")}
+                  onClick={() => changeNodeType("Finish")}
                 >
                   Finish
                 </button>
+              </div>
+            </div>
+          </li>
+          <li className="nav-item dropdown">
+            <div className="dropdown">
+              <button
+                className="btn btn-info dropdown-toggle"
+                type="button"
+                id="dropdownMenu1"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Grid options
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <div
+                   className="dropdown-item btn-light"
+                >
+                  <label className="mr-2">
+                    Filas
+                  </label>
+                  <input type="number" min={1} value={props.numRows} onChange={(e) => {
+                    if(e.target.value > 0)
+                      props.setNumRows(e.target.value)
+                  }}/>
+                </div>
+                <div
+                   className="dropdown-item btn-light"
+                >
+                  <label className="mr-2">
+                    Columnas
+                  </label>
+                  <input type="number" min={1} value={props.numColumns} onChange={(e) => {
+                    if(e.target.value > 0)
+                      props.setNumColumns(e.target.value)
+                    }}/>
+                </div>
               </div>
             </div>
           </li>

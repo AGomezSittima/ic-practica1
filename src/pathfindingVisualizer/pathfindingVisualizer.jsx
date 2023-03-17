@@ -30,7 +30,7 @@ export default function PathfindingVisualizer() {
   const [waypointList, setWaypointList] = useState([]);
 
   useEffect(() => {
-    setGrid(getInitialGrid(numRows, numColumns));
+    setGrid(resetGrid(numRows, numColumns));
   }, [numRows, numColumns])
   
   const updateDimensions = () => {
@@ -81,9 +81,7 @@ export default function PathfindingVisualizer() {
       for (let col = 0; col < grid[0].length; col++)
         document.getElementById(`node-${row}-${col}`).className = "node";
 
-    const newGrid = getInitialGrid(numRows, numColumns);
-    startNode = null;
-    finishNode = null;
+    const newGrid = resetGrid(numRows, numColumns);
 
     setGrid(newGrid);
     setWaypointList([]);
@@ -173,10 +171,9 @@ export default function PathfindingVisualizer() {
   };
 
   const visualizeAStar = () => {
-    if (visualizingAlgorithm || generatingMaze || !startNode || !finishNode) {
+    if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-
     let exitAlgorithm = false;
 
     setVisualizingAlgorithm(true)
@@ -269,7 +266,9 @@ export default function PathfindingVisualizer() {
     //   animateMaze(walls);
     // }, mazeSpeed);
   }
-
+  const isStartFinish = () =>{
+    return  !startNode || !finishNode;
+  }
 
   return (
     <>
@@ -282,6 +281,11 @@ export default function PathfindingVisualizer() {
               clearPath={clearPath}
               updateNodeType = {updateNodeType}
               updateNodeSF = {updateNodeSF}
+              numColumns = {numColumns}
+              numRows = {numRows}
+              setNumColumns = {setNumColumns}
+              setNumRows = {setNumRows}
+              isStartFinish = {isStartFinish}
       />
       <div
         className={`grid ${visualizingAlgorithm || generatingMaze ? "pe-none":"pe-auto"} `}
@@ -425,7 +429,19 @@ const getInitialGrid = (numRows, numColumns) => {
     grid[finishNode.row][finishNode.col] = finishNode;
   return grid;
 };
-
+const resetGrid = (numRows, numColumns) => {
+  let grid = [];
+  for (let row = 0; row < numRows; row++) {
+    let currentRow = [];
+    for (let col = 0; col < numColumns; col++) {
+      currentRow.push(createNode(row, col));
+    }
+    grid.push(currentRow);
+  }
+  startNode = null;
+  finishNode = null;
+  return grid;
+}
 const createNode = (row, col) => {
   return {
     row,
