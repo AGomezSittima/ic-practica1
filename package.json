@@ -2,22 +2,22 @@
   "name": "pathfinding-visualizer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://rohithaug.github.io/pathfinding-visualizer",
+  "homepage": "https://agomezsittima.github.io/ic-practica1",
   "dependencies": {
     "bootstrap": "^4.5.2",
     "cra-template": "1.0.3",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
-    "react": "^16.13.1",
-    "react-bootstrap": "^1.3.0",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.7.2",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
     "save-dev": "0.0.1-security"
   },
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -38,6 +38,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^3.1.0"
+    "gh-pages": "^5.0.0"
   }
 }

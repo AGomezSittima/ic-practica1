@@ -25,13 +25,13 @@ export default function PathfindingVisualizer() {
   const [height, setHeight] = useState(window.innerHeight);
   const [numRows, setNumRows] = useState(initialNumRows);
   const [numColumns, setNumColumns] = useState(initialNumColumns);
-  const [nodeType, setNodeType] = useState("Wall");
+  const [nodeType, setNodeType] = useState(null);
   const [waypointList, setWaypointList] = useState([]);
 
   useEffect(() => {
     setGrid(resetGrid(numRows, numColumns));
   }, [numRows, numColumns])
-  
+
   const updateDimensions = () => {
     let [rows, cols] = getInitialNum(window.innerWidth, window.innerHeight);
     setNumRows(rows);
@@ -39,7 +39,7 @@ export default function PathfindingVisualizer() {
     setWidth(window.innerWidth);
     setHeight(window.innerHeight);
   };
- 
+
   window.addEventListener("resize", updateDimensions);
 
   const updateNodeType = (type) => {
@@ -50,6 +50,9 @@ export default function PathfindingVisualizer() {
     setNodeType(type);
   }
   const handleMouseDown = (row, col) => {
+    if(!nodeType)
+      return;
+
     const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType, clearPath);
 
 
@@ -59,6 +62,9 @@ export default function PathfindingVisualizer() {
   }
 
   const handleMouseEnter = (row, col) => {
+    if(!nodeType)
+      return;
+
     if (mouseIsPressed) {
       const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType, clearPath);
 
@@ -202,7 +208,7 @@ export default function PathfindingVisualizer() {
     }
     setGeneratingMaze(true);
 
-   
+
     const walls = factoryMaze(maze)(grid, startNode, finishNode);
 
     animateMaze(walls);
@@ -348,6 +354,7 @@ const createNode = (row, col) => {
 
 const getNewGridWithNewNode = (grid, waypointList, row, col, type, clearPath) => {
   clearPath();
+
   switch (type) {
     case 'Wall':
       return getNewGridWithWalls(grid, waypointList, row, col);

@@ -6,7 +6,7 @@ export default function NavBar(props){
   const [maze, setMaze] = useState("Generate Maze");
   const [pathState, setPathState] = useState(false);
   const [mazeState, setMazeState] = useState(false);
-  const [typeState, setTypeState] = useState("Wall");
+  const [typeState, setTypeState] = useState(null);
 
 
 
@@ -33,7 +33,7 @@ export default function NavBar(props){
       alert("Se requiere un nodo de inicio y de fin para ejecutar el algoritmo");
       return;
     }
-    
+
     if (pathState) {
       clearPath();
       return;
@@ -169,7 +169,6 @@ export default function NavBar(props){
               {maze}
             </button>
           </li>
-        
           <li className="nav-item dropdown">
             <div className="dropdown">
               <button
@@ -180,9 +179,23 @@ export default function NavBar(props){
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                {typeState}
+                {!typeState ? "Node type" : typeState}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeType("Start")}
+                >
+                  Start
+                </button>
+                <button
+                  className="dropdown-item btn-light"
+                  type="button"
+                  onClick={() => changeNodeType("Finish")}
+                >
+                  Finish
+                </button>
                 <button
                   className="dropdown-item btn-light"
                   type="button"
@@ -203,20 +216,6 @@ export default function NavBar(props){
                   onClick={() => changeNodeType("Risky")}
                 >
                   Risky
-                </button>
-                <button
-                  className="dropdown-item btn-light"
-                  type="button"
-                  onClick={() => changeNodeType("Start")}
-                >
-                  Start
-                </button>
-                <button
-                  className="dropdown-item btn-light"
-                  type="button"
-                  onClick={() => changeNodeType("Finish")}
-                >
-                  Finish
                 </button>
               </div>
             </div>
