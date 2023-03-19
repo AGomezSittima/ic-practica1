@@ -13,7 +13,6 @@ const initialNum = getInitialNum(window.innerWidth, window.innerHeight);
 const initialNumRows = initialNum[0];
 const initialNumColumns = initialNum[1];
 
-// const startFinishNode = getStartFinishNode(initialNumRows, initialNumColumns);
 let startNode;
 let finishNode;
 
@@ -138,12 +137,6 @@ export default function PathfindingVisualizer() {
           nodesInShortestPathOrder,
           visitedNodesInOrder
         );
-        // setTimeout(() => {
-        //   animateShortestPath(
-        //     nodesInShortestPathOrder,
-        //     visitedNodesInOrder
-        //   );
-        // }, i * speed);
         return;
       }
       node.isVisited = true;
@@ -208,18 +201,11 @@ export default function PathfindingVisualizer() {
       return;
     }
     setGeneratingMaze(true);
-    // const startNode = grid[startNodeRow][startNodeCol];
-    // const finishNode = grid[finishNodeRow][finishNodeCol];
+
    
     const walls = factoryMaze(maze)(grid, startNode, finishNode);
 
     animateMaze(walls);
-    // setTimeout(() => {
-    //   const startNode = grid[startNodeRow][startNodeCol];
-    //   const finishNode = grid[finishNodeRow][finishNodeCol];
-    //   const walls = factoryMaze(maze)(grid, startNode, finishNode);
-    //   animateMaze(walls);
-    // }, mazeSpeed);
   }
   const isStartFinish = () =>{
     return  !startNode || !finishNode;

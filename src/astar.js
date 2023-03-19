@@ -38,7 +38,6 @@ export function astar(grid, startNode, finishNode) {
   }
   return visitedNodesInOrder;
 }
-//  TODO Cambiar a un bucle or
 function getNeighbours(node, grid) {
   let neighbours = [];
   let { row, col } = node;
