@@ -4,6 +4,7 @@ export function astar(grid, startNode, finishNode) {
   }
   let unvisitedNodes = []; //open list
   let visitedNodesInOrder = []; //closed list
+
   startNode.distance = 0;
   unvisitedNodes.push(startNode);
 
@@ -16,10 +17,12 @@ export function astar(grid, startNode, finishNode) {
     if (closestNode === finishNode) return visitedNodesInOrder;
 
     let neighbours = getNeighbours(closestNode, grid);
+
     for (let neighbour of neighbours) {
       let distance = closestNode.distance + 1;
       //f(n) = g(n) + h(n)
       if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)) {
+        
         unvisitedNodes.unshift(neighbour);
         neighbour.distance = distance;
         neighbour.totalDistance =

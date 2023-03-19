@@ -35,7 +35,7 @@ export default function NavBar(props){
     }
     
     if (pathState) {
-      clearTemp();
+      clearPath();
       return;
     }
     setPathState(true);
@@ -258,6 +258,15 @@ export default function NavBar(props){
                 </div>
               </div>
             </div>
+          </li>
+          <li>
+          <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => clearPath()}
+            >
+              Clear Path
+            </button>
           </li>
           <li>
             <button

@@ -51,7 +51,7 @@ export default function PathfindingVisualizer() {
     setNodeType(type);
   }
   const handleMouseDown = (row, col) => {
-    const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType);
+    const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType, clearPath);
 
 
     setGrid(newGrid);
@@ -61,7 +61,7 @@ export default function PathfindingVisualizer() {
 
   const handleMouseEnter = (row, col) => {
     if (mouseIsPressed) {
-      const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType);
+      const {newGrid, newWaypointList } = getNewGridWithNewNode(grid, waypointList, row, col, nodeType, clearPath);
 
       setGrid(newGrid);
       setWaypointList(newWaypointList);
@@ -77,9 +77,6 @@ export default function PathfindingVisualizer() {
     if (visualizingAlgorithm || generatingMaze) {
       return;
     }
-    for (let row = 0; row < grid.length; row++)
-      for (let col = 0; col < grid[0].length; col++)
-        document.getElementById(`node-${row}-${col}`).className = "node";
 
     const newGrid = resetGrid(numRows, numColumns);
 
@@ -113,24 +110,12 @@ export default function PathfindingVisualizer() {
         );
         setGrid(newGrid);
         setVisualizingAlgorithm(false);
-        // setTimeout(() => {
-        //   let newGrid = updateNodesForRender(
-        //     grid,
-        //     nodesInShortestPathOrder,
-        //     visitedNodesInOrder
-        //   );
-        //   setGrid(newGrid);
-        //   setVisualizingAlgorithm(false);
-        // }, i * (3 * speed));
+
         return;
       }
       let node = nodesInShortestPathOrder[i];
       node.isShortest = true;
 
-      // setTimeout(() => {
-      //   //shortest path node
-      //   document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
-      // }, i * (3 * speed));
     }
   };
 
@@ -162,11 +147,6 @@ export default function PathfindingVisualizer() {
         return;
       }
       node.isVisited = true;
-      // setTimeout(() => {
-      //   //visited node
-      //   document.getElementById(`node-${node.row}-${node.col}`).className =
-      //     "node node-visited";
-      // }, i * speed);
     }
   };
 
@@ -211,16 +191,6 @@ export default function PathfindingVisualizer() {
       {
         setVisualizingAlgorithm(false);
       }
-
-    // setTimeout(() => {
-    //   const startNode = grid[startNodeRow][startNodeCol];
-    //   const finishNode = grid[finishNodeRow][finishNodeCol];
-    //   const visitedNodesInOrder = astar(grid, startNode, finishNode);
-    //   const nodesInShortestPathOrder = getNodesInShortestPathOrderAstar(
-    //     finishNode
-    //   );
-    //   animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
-    // }, speed);
   }
 
   const animateMaze = (walls) => {
@@ -229,22 +199,7 @@ export default function PathfindingVisualizer() {
         let newGrid = getNewGridWithMaze(getInitialGrid(numRows, numColumns), walls);
         setGrid(newGrid);
         setGeneratingMaze(false);
-        // setTimeout(() => {
-        //   let newGrid = getNewGridWithMaze(getInitialGrid(numRows, numColumns), walls);
-        //   setGrid(newGrid);
-        //   setGeneratingMaze(false);
-        // }, i * mazeSpeed);
-        return;
       }
-      let wall = walls[i];
-      let node = grid[wall[0]][wall[1]];
-      document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-wall";
-      // setTimeout(() => {
-      //   //Walls
-      //   document.getElementById(`node-${node.row}-${node.col}`).className =
-      //     "node node-wall-animated";
-      // }, i * mazeSpeed);
     }
   };
 
@@ -360,60 +315,6 @@ function getInitialNum(width, height) {
   return [numRows, numColumns];
 
 }
-
-// function getRandomNums(num) {
-//   let randomNums1 = [];
-//   let temp = 2;
-//   for (let i = 5; i < num / 2; i += 2) {
-//     randomNums1.push(temp);
-//     temp += 2;
-//   }
-//   let randomNums2 = [];
-//   temp = -2;
-//   for (let i = num / 2; i < num - 5; i += 2) {
-//     randomNums2.push(temp);
-//     temp -= 2;
-//   }
-//   return [randomNums1, randomNums2];
-// }
-
-// function getStartFinishNode(numRows, numColumns) {
-//   let randomNums;
-//   let x;
-//   let y;
-//   let startNodeRow;
-//   let startNodeCol;
-//   let finishNodeRow;
-//   let finishNodeCol;
-//   if (numRows < numColumns) {
-//     randomNums = getRandomNums(numRows);
-//     x = Math.floor(numRows / 2);
-//     y = Math.floor(numColumns / 4);
-//     if (x % 2 !== 0) x -= 1;
-//     if (y % 2 !== 0) y += 1;
-//     startNodeRow =
-//       x + randomNums[1][Math.floor(Math.random() * randomNums[1].length)];
-//     startNodeCol = y + [-6, -4, -2, 0][Math.floor(Math.random() * 4)];
-//     finishNodeRow =
-//       x + randomNums[0][Math.floor(Math.random() * randomNums[0].length)];
-//     finishNodeCol =
-//       numColumns - y + [0, 2, 4, 6][Math.floor(Math.random() * 4)];
-//   } else {
-//     randomNums = getRandomNums(numColumns);
-//     x = Math.floor(numRows / 4);
-//     y = Math.floor(numColumns / 2);
-//     if (x % 2 !== 0) x -= 1;
-//     if (y % 2 !== 0) y += 1;
-//     startNodeRow = x + [-6, -4, -2, 0][Math.floor(Math.random() * 4)];
-//     startNodeCol =
-//       y + randomNums[1][Math.floor(Math.random() * randomNums[1].length)];
-//     finishNodeRow = numRows - x + [0, 2, 4, 6][Math.floor(Math.random() * 4)];
-//     finishNodeCol =
-//       y + randomNums[0][Math.floor(Math.random() * randomNums[0].length)];
-//   }
-//   return [startNodeRow, startNodeCol, finishNodeRow, finishNodeCol];
-// }
-
 const getInitialGrid = (numRows, numColumns) => {
   let grid = [];
   for (let row = 0; row < numRows; row++) {
@@ -459,7 +360,8 @@ const createNode = (row, col) => {
   };
 };
 
-const getNewGridWithNewNode = (grid, waypointList, row, col, type) => {
+const getNewGridWithNewNode = (grid, waypointList, row, col, type, clearPath) => {
+  clearPath();
   switch (type) {
     case 'Wall':
       return getNewGridWithWalls(grid, waypointList, row, col);
@@ -613,8 +515,6 @@ const updateNodesForRender = (
   grid,
   nodesInShortestPathOrder,
   visitedNodesInOrder,
-  startNode,
-  finishNode,
 ) => {
   let newGrid = grid.slice();
   for (let node of visitedNodesInOrder) {
