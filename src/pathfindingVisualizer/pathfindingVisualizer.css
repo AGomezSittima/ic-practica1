@@ -1,0 +1,16 @@
+.grid {
+  font-size: 0;
+
+  position: absolute;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, 2%);
+}
+
+.not_visualizing{
+  pointer-events: unset; 
+}
+
+.visualizing{
+  pointer-events: none; 
+}
