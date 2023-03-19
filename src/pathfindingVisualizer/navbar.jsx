@@ -237,7 +237,7 @@ export default function NavBar(props){
                    className="dropdown-item btn-light"
                 >
                   <label className="mr-2">
-                    Filas
+                    Rows
                   </label>
                   <input type="number" min={1} value={props.numRows} onChange={(e) => {
                     if(e.target.value > 0)
@@ -248,7 +248,7 @@ export default function NavBar(props){
                    className="dropdown-item btn-light"
                 >
                   <label className="mr-2">
-                    Columnas
+                    Columns
                   </label>
                   <input type="number" min={1} value={props.numColumns} onChange={(e) => {
                     if(e.target.value > 0)
